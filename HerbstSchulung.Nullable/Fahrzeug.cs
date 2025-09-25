@@ -1,0 +1,20 @@
+// Beispielklasse für required und init Properties
+namespace HerbstSchulung.Nullable;
+
+public class Fahrzeug
+{
+    // Die Eigenschaft 'Marke' ist erforderlich und kann nur beim Initialisieren gesetzt werden
+    public required string Marke { get; init; }
+
+    // Die Eigenschaft 'Modell' ist optional, kann aber ebenfalls nur beim Initialisieren gesetzt werden
+    public string? Modell { get; init; }
+
+
+    // Die Eigenschaft 'Farbe' ist erforderlich und kann jederzeit gesetzt werden
+    public required string Farbe { get; set; }
+    
+}
+//
+public record FahrzeugRecord(string Marke, string? Modell, string Farbe)
+{
+}
