@@ -1,5 +1,6 @@
 ﻿namespace HerbstSchulung.Nullable;
 
+
 // Die Klasse Person demonstriert die Verwendung von nicht-nullbaren und nullable Strings
 public class Person
 {

@@ -29,7 +29,6 @@ p2.Spitzname = null; // Keine Warnung, da Spitzname nullable ist
 
 
 
-
 // Beispiel 4: Wie intelligent ist der Compiler? 
 var x = GetString("abcd");
 p2.Name = x;

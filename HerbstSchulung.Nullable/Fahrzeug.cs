@@ -14,6 +14,7 @@ public class Fahrzeug
     public required string Farbe { get; set; }
     
 }
+
 //
 public record FahrzeugRecord(string Marke, string? Modell, string Farbe)
 {
