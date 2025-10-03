@@ -10,12 +10,11 @@ public class Fahrzeug
     public string? Modell { get; init; }
 
 
-    // Die Eigenschaft 'Farbe' ist erforderlich und kann jederzeit gesetzt werden
-    public required string Farbe { get; set; }
+    public string? Farbe { get; set; }
     
 }
 
 //
-public record FahrzeugRecord(string Marke, string? Modell, string Farbe)
+public record FahrzeugRecord(string Marke, string? Modell, string? Farbe)
 {
 }

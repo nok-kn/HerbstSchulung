@@ -30,7 +30,7 @@ p2.Spitzname = null; // Keine Warnung, da Spitzname nullable ist
 
 
 // Beispiel 4: Wie intelligent ist der Compiler? 
-var x = GetString("abcd");
+var x = GetString(null);
 p2.Name = x;
 
 [return: NotNullIfNotNull(nameof(parameter))]
@@ -50,8 +50,24 @@ if (eingabe == null)
 static string GetSomeString() => null;
 #pragma warning restore CS8603 
 
-// Objektinitialisierung mit required und init Properties
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Beispiel 7: Verwendung von required und init Properties
 var auto = new Fahrzeug { Marke = "VW", Modell = "Golf" };
-var auto2 = new Fahrzeug { Marke = "aa" };
+var auto2 = new Fahrzeug { Marke = null!, Modell = null};
 
 
