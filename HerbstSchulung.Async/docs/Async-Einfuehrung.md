@@ -1,7 +1,5 @@
 # Asynchron in .NET
 
-Ziel: Ein leicht verständlicher Überblick über async/await in .NET, der typische Missverständnisse aufklärt und die Rolle von Task.Run erklärt.
-
 ## Kernidee von async/await
 - async/await vereinfacht asynchrone, nicht-blockierende Abläufe.
 - Wichtiger Punkt: async bedeutet nicht automatisch „neuer Thread“. Meist wird kein zusätzlicher Thread gestartet.
@@ -35,34 +33,11 @@ Hinweis: Es wird kein zusätzlicher Thread für das Warten benötigt. Der Aufrufer-
 - Multithreading verteilt CPU-Arbeit auf mehrere Threads/CPU-Kerne. Das erreichst du nicht automatisch mit await.
 - Fortsetzungen (nach await) laufen standardmäßig im aktuellen Synchronisationskontext weiter (z. B. UI-Thread), außer man nutzt ConfigureAwait(false) oder es gibt keinen Kontext (ASP.NET Core).
 
-### Vergleich: I/O-bound vs. CPU-bound
-```mermaid
-flowchart TD
-    A[Arbeit starten] --> B{Arbeitstyp?}
-    B -->|I/O-gebunden| C[Native Async-API nutzen
-(HTTP, Streams, DB) -> await]
-    B -->|CPU-gebunden| D{Blockiert UI/Request?}
-    D -->|Ja| E[Task.Run(() => CPU-Arbeit)]
-    D -->|Nein| F[Direkt ausführen
-(kein unnötiges Task.Run)]
-    E --> G[await Ergebnis]
-    C --> G
-    F --> G[Weiter mit Ergebnis]
-```
-
 ## Was macht Task.Run?
 - Task.Run startet eine Arbeit im ThreadPool (neuer Hintergrund-Thread aus dem Pool).
 - Geeignet für CPU-gebundene Arbeit, wenn der aktuelle Thread nicht blockiert werden darf (z. B. UI-Thread).
 - Nicht geeignet als „Allzweck-Async-Schalter“. Für I/O-gebundene Arbeit bringt Task.Run keinen Vorteil und erzeugt unnötige Threads/Overhead.
 - In ASP.NET Core ist Task.Run selten nötig; der Request-Thread ist kein UI-Thread und sollte durch asynchrone I/O-Aufrufe frei bleiben.
-
-### Visualisierung: Task.Run nutzt ThreadPool
-```mermaid
-flowchart LR
-    A[Task.Run(() => Arbeit)] --> B[ThreadPool-Thread]
-    B --> C[CPU-intensive Berechnung]
-    C --> D[Ergebnis/Continuation per await]
-```
 
 ### Kurzbeispiele
 - I/O-bound (ohne Task.Run):

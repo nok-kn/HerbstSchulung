@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace HerbstSchulung.Async;
 
 /// <summary>
@@ -76,31 +74,7 @@ public static class AsyncExamples
         return s;
     }
 
-    // Beispiel 5: ValueTask falsch eingesetzt
-    // Problem 1: ValueTask ist kein Ersatz für Task und sollte nur mit Bedacht genutzt werden (Overhead/Fehlerpotenzial).
-    // Problem 2: Ein ValueTask darf nur einmal awaited werden. Mehrfaches Await führt zu Fehlern.
-    public static ValueTask<int> LiefereZahl_ValueTask_Fehlerhaft(bool synchron)
-    {
-        if (synchron)
-        {
-            // Hier ist ValueTask sinnvoll (synchrones Ergebnis). Aber Vorsicht: Aufrufer darf nur einmal awaiten.
-            return new ValueTask<int>(42);
-        }
-        else
-        {
-            // Hier wird unnötig ValueTask statt Task verwendet. Besser: Task bei rein asynchronem Pfad.
-            return new ValueTask<int>(Task.Run(async () => { await Task.Delay(5); return 21 + 21; }));
-        }
-    }
-
-    // Korrektur: API klar halten. Wenn häufig synchron: ValueTask, sonst Task. Niemals mehrfach awaiten.
-    public static async Task<int> LiefereZahl_Task_Korrekt()
-    {
-        await Task.Yield();
-        return 42;
-    }
-
-    // Beispiel 6: IAsyncDisposable falsch verwendet (DisposeAsync nicht awaited)
+    // Beispiel 5: IAsyncDisposable falsch verwendet (DisposeAsync nicht awaited)
     public static async Task AsyncDisposable_Fehler()
     {
         var res = new RessourcenContainer();
@@ -123,34 +97,6 @@ public static class AsyncExamples
         // hier sorgt await using dafür, dass DisposeAsync korrekt awaited wird
     }
 
-    // Beispiel 7: Fehlerbehandlung in async void (Ausnahmen gehen verloren)
-    public static async void FehlerBehandlung_async_void_Fehler()
-    {
-        try
-        {
-            await Task.Delay(5);
-            throw new ApplicationException("Boom");
-        }
-        catch
-        {
-            // swallow
-        }
-    }
-
-    public static async Task FehlerBehandlung_Task_Korrekt()
-    {
-        try
-        {
-            await Task.Delay(5);
-            throw new ApplicationException("Boom");
-        }
-        catch (Exception ex)
-        {
-            // sinnvoll: Logging/Wrap/Weiterwerfen
-            Trace.WriteLine($"Fehler korrekt behandelt: {ex.Message}");
-            throw;
-        }
-    }
 }
 
 /// <summary>

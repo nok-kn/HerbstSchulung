@@ -1,78 +1,44 @@
 namespace HerbstSchulung.Async;
 
 /// <summary>
-/// Herausforderungen/Aufgaben für Teilnehmer. Jede Aufgabe enthält:
-/// - eine fehlerhafte Implementierung
-/// - Hinweise zur Lösung
+/// Herausforderungen/Aufgaben für Teilnehmer. 
 /// </summary>
 public static class AsyncChallenges
 {
-    // Aufgabe 1 (Einsteiger): Fehlende await-Anweisung
-    // Ziel: await hinzufügen und Fehler propagieren lassen
-    public static async Task<string> LadeTextAsync(Uri uri)
+    // Aufgabe 1: Korrigiere/verbessere fehlerhafte/nicht ganz Optimale Implementierung
+    public static async Task<string> Connect(string connectionString)
     {
-        // FEHLER: Der Task wird gestartet, aber nicht awaited -> mögliche Race Conditions/Fehler gehen verloren
-        var t = new HttpClient().GetStringAsync(uri);
+        var t = new DbContex().ConnectToDatabase(connectionString);
         return await Task.FromResult(t.Result);
     }
 
-    // Aufgabe 2: Deadlock/Blockierung vermeiden
-    // Ziel: Keine .Result/Wait() verwenden und ConfigureAwait sinnvoll einsetzen (Bibliothekskontext)
-    public static string LadeTextSynchron_Falsch(Uri uri)
+    // Aufgabe 2: lock + async = Problem
+    // Ein direkter await innerhalb eines lock ist in C# nicht erlaubt (Compilerfehler).
+    // Deswegen greifen viele fälschlich zu .Result/.Wait() – genau das soll hier vermieden werden.
+    // HINWEIS: Ersetze den lock durch einen asynchronen Mechanismus(z.B.SemaphoreSlim)
+    public static int LockUndAsync_Blockiert_Falsch()
     {
-        // FEHLER: .Result blockiert den Thread
-        return new HttpClient().GetStringAsync(uri).Result;
-    }
-
-    // Aufgabe 3 (Fortgeschritten): ValueTask korrekt verwenden
-    // Ziel: API-Formulierung und nur einfaches Await, synchroner Schnellpfad + asynchroner Pfad
-    public static ValueTask<int> BerechneAsync(bool synchron)
-    {
-        if (synchron)
+        lock (Gate)
         {
-            // ok: synchroner Schnellpfad
-            return new ValueTask<int>(7);
-        }
-        // FEHLER: ValueTask mit Task.Run ohne ConfigureAwait und Mehrfachawait-Gefahr in Aufrufercode
-        return new ValueTask<int>(Task.Run(async () => { await Task.Delay(5); return 7; }));
-    }
-
-    // Aufgabe 4 (Fortgeschritten): IAsyncDisposable korrekt implementieren
-    // Ziel: Ressourcen richtig freigeben und DisposeAsync korrekt awaiten
-    public sealed class AsyncStream : IAsyncDisposable
-    {
-        private readonly MemoryStream _buffer = new();
-        private bool _disposed;
-
-        public async Task WriteAsync(byte[] data, CancellationToken ct = default)
-        {
-            // FEHLER: Keine Cancellation-Abfrage, ConfigureAwait fehlt (Bibliothekscode), Dispose-Zustand wird ignoriert
-            await Task.Delay(1, ct);
-            await _buffer.WriteAsync(data, ct);
-        }
-
-        public ValueTask DisposeAsync()
-        {
-            // FEHLER: nicht asynchron, keine Idempotenz, Ressourcen nicht korrekt freigegeben
-            _buffer.Dispose();
-            return ValueTask.CompletedTask;
+            //.Result blockiert synchron, während der Monitor gehalten wird.
+            // Das kann Deadlocks verursachen (z. B. wenn die Fortsetzung versucht, den gleichen Monitor/Synchronisationskontext zu nutzen)
+            return LadeDatenAsync().Result;
         }
     }
 
-    // Aufgabe 5 (Bonus): Fehlerbehandlung und Cancellation in Pipelines
-    // Ziel: Exceptions korrekt weitergeben, Cancellation honorieren, ConfigureAwait in Libs
-    public static async Task<int> PipelineAsync(Func<Task<int>> step1, Func<int, Task<int>> step2, CancellationToken ct)
+    private static readonly object Gate = new();
+
+    private static async Task<int> LadeDatenAsync()
     {
-        // FEHLER: Cancellation wird ignoriert, Exceptions werden geschluckt
-        try
-        {
-            var a = await step1();
-            var b = await step2(a);
-            return a + b;
-        }
-        catch
-        {
-            return -1;
-        }
+        await Task.Delay(50).ConfigureAwait(false);
+        return 123;
+    }
+}
+
+public class DbContex
+{
+    public Task<string> ConnectToDatabase(object stringConnectionString, CancellationToken cancellation = default)
+    {
+        return Task.FromResult("Connected!");
     }
 }
