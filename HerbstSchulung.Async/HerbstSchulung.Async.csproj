@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<Description>Workshop-Modul: Asynchrone Programmierung in .NET (Beispiele, Herausforderungen, Lösungen)</Description>
+	</PropertyGroup>
+</Project>

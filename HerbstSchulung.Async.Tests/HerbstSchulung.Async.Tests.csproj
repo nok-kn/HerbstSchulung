@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="xunit" Version="2.8.1" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+		<ProjectReference Include="..\HerbstSchulung.Async\HerbstSchulung.Async.csproj" />
+	</ItemGroup>
+</Project>
