@@ -24,6 +24,22 @@ public static class AsyncExamples
         // Ausnahme ist nun beobachtbar und kann vom Aufrufer mittels try/catch behandelt werden.
         throw new InvalidOperationException("Ausnahme ist beobachtbar.");
     }
+    
+    private static void Empfehlung()
+    {
+        // Einmalig beim App-Start registrieren
+        TaskScheduler.UnobservedTaskException += (sender, e) =>
+        {
+            foreach (var ex in e.Exception.InnerExceptions)
+            {
+                Console.WriteLine($"Unbeobachtete Exception: {ex.Message}");
+                // Logging, Telemetrie, etc.
+            }
+
+            // Verhindert App-Crash (optional)
+            e.SetObserved();
+        };
+    }
 
     // Beispiel 2: Fehlendes await -> Fire-and-Forget ohne Absicht
     // Problem: Der Fehler im inneren Task geht verloren, und die Methode signalisiert fälschlich Fertigstellung.
