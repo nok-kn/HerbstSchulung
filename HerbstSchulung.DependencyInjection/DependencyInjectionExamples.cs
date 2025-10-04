@@ -23,7 +23,7 @@ public static class DependencyInjectionExamples
     /// Zeigt Unterschiede der Lifetimes (Transient, Scoped, Singleton) anhand von zufällig generierten GUIDs.
     /// Erwartung: Transient -> immer neu, Scoped -> pro Scope einmal, Singleton -> immer gleich.
     /// </summary>
-    public static void DemoLebenszyklen()
+    public static void Lebenszyklen()
     {
         var services = new ServiceCollection();
         services.AddTransient<OperationTransient>();
@@ -65,23 +65,23 @@ public static class DependencyInjectionExamples
     }
   
     /// <summary>
-    /// Demonstriert eine Factory-Registrierung (delegierte Registrierung) für ein Interface.
+    /// Demonstriert eine Factory-Registrierung
     /// </summary>
     public static void FactoryRegistrierung()
     {
         var services = new ServiceCollection();
-        // Factory vergibt beim Aufbau einen neuen Guid.
-        services.AddSingleton<IGuidProvider>(new GuidProvider(Guid.NewGuid()));
         services.AddTransient<IUhrzeitProvider, SystemUhrzeitProvider>();
-        services.AddTransient<BerichtService>();
+        services.AddSingleton<Func<string, BerichtService>>(sp => 
+            berichtName => new BerichtService(sp.GetRequiredService<IUhrzeitProvider>(), berichtName));
 
         using var provider = services.BuildServiceProvider();
-        var service1 = provider.GetRequiredService<BerichtService>();
-        var service2 = provider.GetRequiredService<BerichtService>();
-
-        // Da GuidProvider Singleton (durch AddSingleton) ist, sollten beide Berichte denselben Guid tragen.
-        Console.WriteLine(service1.ErstelleBericht("Factory Beispiel 1"));
-        Console.WriteLine(service2.ErstelleBericht("Factory Beispiel 2"));
+        var berichtService = provider.GetService<BerichtService>();
+       
+        Console.WriteLine(berichtService == null ? "BerichtService ist nicht registriert" : "BerichtService ist registriert");
+        
+        var factory = provider.GetRequiredService<Func<string, BerichtService>>();
+        berichtService = factory("Bericht Nr 1");
+        Console.WriteLine(berichtService.ErstelleBericht());
     }
     
     /// <summary>
@@ -114,7 +114,7 @@ public static class DependencyInjectionExamples
         services.AddOptions<BerichtOptions>()
                 .Configure(o => o.StandardTitel = "Standard-Berichtstitel");
 
-        services.AddSingleton<IGuidProvider>(sp => new GuidProvider(Guid.NewGuid()));
+        services.AddSingleton<IGuidProvider>(new GuidProvider(Guid.NewGuid()));
         services.AddTransient<IUhrzeitProvider, SystemUhrzeitProvider>();
         services.AddTransient<BerichtServiceMitOptionen>();
 
@@ -123,27 +123,51 @@ public static class DependencyInjectionExamples
         Console.WriteLine(service.ErstelleBericht());
     }
  
+    /// <summary>
+    /// Demonstriert Registrierung mehrerer Implementierungen desselben Interfaces und Auflösung als IEnumerable.
+    /// WICHTIG: Die Auflösereihenfolge entspricht der Registrierungsreihenfolge.
+    /// </summary>
+    public static void MehrfachImplementierungen()
+    {
+        var services = new ServiceCollection();
+        // Mehrere Implementierungen für dasselbe Interface registrieren
+        services.AddSingleton<INotifier, EmailNotifier>();
+        services.AddSingleton<INotifier, SmsNotifier>();
+        // Aggregat-Dienst der alle Notifier nutzt
+        services.AddSingleton<AggregatNotifier>();
+
+        using var provider = services.BuildServiceProvider();
+
+        // Direkte Enumeration
+        var alleNotifiers = provider.GetRequiredService<IEnumerable<INotifier>>();
+        Console.WriteLine("-- Direkte Enumeration über IEnumerable<INotifier> --");
+        foreach (var n in alleNotifiers)
+        {
+            n.Senden("Test an alle");
+        }
+
+        // Nutzung über Aggregat-Service (zeigt Injection von IEnumerable<INotifier>)
+        var aggregator = provider.GetRequiredService<AggregatNotifier>();
+        aggregator.SendeAnAlle("Nachricht via AggregatNotifier");
+    }
+ 
     public interface IUhrzeitProvider
     {
         DateTime AktuelleZeit();
     }
 
     /// <summary>
-    /// Konkrete Implementierung, die direkt DateTime.UtcNow nutzt.
-    /// Achtung: Für testbaren Code oft besser eine abstrahierte Zeitquelle (hier Interface) zu injizieren.
+    /// Für testbaren Code ist es oft besser eine abstrahierte Zeitquelle (hier Interface) zu injizieren.
     /// </summary>
     public class SystemUhrzeitProvider : IUhrzeitProvider
     {
         public DateTime AktuelleZeit() => DateTime.UtcNow;
     }
 
-    /// <summary>
-    /// Demonstration einer Klasse mit mehreren Abhängigkeiten.
-    /// </summary>
-    public class BerichtService(IUhrzeitProvider uhrzeitProvider, IGuidProvider guidProvider)
+    public class BerichtService(IUhrzeitProvider uhrzeitProvider, string berichtName)
     {
-        public string ErstelleBericht(string titel)
-            => $"[{uhrzeitProvider.AktuelleZeit():O}] ({guidProvider.AktuellerGuid}) {titel}";
+        public string ErstelleBericht()
+            => $"{berichtName} {uhrzeitProvider.AktuelleZeit():O}";
     }
 
     /// <summary>
@@ -201,5 +225,18 @@ public static class DependencyInjectionExamples
     public class SmsNotifier : INotifier
     {
         public void Senden(string nachricht) => Console.WriteLine($"[SMS] {nachricht}");
+    }
+
+    /// <summary>
+    /// Aggregiert mehrere Notifier und sendet eine Nachricht an alle.
+    /// </summary>
+    public class AggregatNotifier(IEnumerable<INotifier> notifiers)
+    {
+        public void SendeAnAlle(string nachricht)
+        {
+            Console.WriteLine("-- AggregatNotifier sendet an alle --");
+            foreach (var n in notifiers)
+                n.Senden(nachricht);
+        }
     }
 }

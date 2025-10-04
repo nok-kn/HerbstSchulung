@@ -3,8 +3,10 @@ using HerbstSchulung.DependencyInjection;
 
 DependencyInjectionExamples.EinfacheRegistrierung();
 
-// DependencyInjectionExamples.DemoLebenszyklen();
-// DependencyInjectionExamples.FactoryRegistrierung();
+// DependencyInjectionExamples.Lebenszyklen();
+ DependencyInjectionExamples.FactoryRegistrierung();
 // DependencyInjectionExamples.Optionen();
 // DependencyInjectionExamples.KeyedServices();
+DependencyInjectionExamples.MehrfachImplementierungen();
+Console.ReadLine();
 
