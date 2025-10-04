@@ -4,14 +4,11 @@ Workshop-Modul: Asynchrone Programmierung in .NET (C# 12/13, .NET 8)
 
 Inhalt:
 - Anti-Beispiele mit typischen Fehlern (async void, fehlendes await, .Result/Wait-Blockierung, falsche Fehlerbehandlung)
-- Herausforderungen in mehreren Schwierigkeitsgraden
-- Lösungen mit Erklärungen und modernen Patterns (ValueTask, IAsyncDisposable, ConfigureAwait(false))
-- Tests zur Verifikation
+- Herausforderungen
 
 Siehe Dateien:
 - AsyncExamples.cs – Anti-Beispiele mit Kommentaren
-- AsyncChallenges.cs – Aufgaben mit TODOs
-- AsyncSolutions.cs – Beispiel-Lösungen und Erklärungen
+- AsyncChallenges.cs – Aufgaben
 - Tests – xUnit-Tests zur Überprüfung
 
 Weiterführende Ressourcen:
