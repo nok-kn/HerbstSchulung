@@ -33,9 +33,9 @@ public class AsyncPropertySetterExample
     
     // Korrektur 1: Explizite Async-Methode statt Setter
 
-    private string _name1;
+    private string? _name1;
 
-    public string Name1 => _name1;
+    public string? Name1 => _name1;
     
     public async Task SetName1Async(string value)
     {
@@ -46,9 +46,9 @@ public class AsyncPropertySetterExample
     // Korrektur 2: Testbare und "safe" async void, aber (!): 
     //	- Aufrufer können die Fertigstellung nicht awaiten
     //  - es kann zu Race-Conditions kommen, wenn der Setter schnell hintereinander aufgerufen wird.
-    private string _name2;
+    private string? _name2;
 
-    public string Name2
+    public string? Name2
     {
         get => _name2;
         set

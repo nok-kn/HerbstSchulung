@@ -3,6 +3,7 @@ using HerbstSchulung.Nullable;
 
 Console.WriteLine("Hello, World!");
 
+
 // Beispiel 1: Zuweisung von null an ein nicht-nullbares Feld erzeugt eine Warnung
 var p1 = new Person(null); // Warnung: Cannot convert null literal to non-nullable reference type. 
 
@@ -12,21 +13,6 @@ p2.Name = null; // Warnung: Cannot convert null literal to non-nullable referenc
 
 // Beispiel 3: Nullable Eigenschaft kann ohne Warnung null zugewiesen werden
 p2.Spitzname = null; // Keine Warnung, da Spitzname nullable ist
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // Beispiel 4: Wie intelligent ist der Compiler? 

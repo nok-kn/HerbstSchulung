@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjectionChallenges
 {
+    //------------------------------------------------------------------------------------------------------------------
     // Aufgabe 1: 
     // Problem: Manuelle Instanziierung statt Nutzung des Containers erschwert Testbarkeit
     // Diese Klasse erzeugt ihre Abhängigkeiten selbst. 
@@ -23,6 +24,7 @@ public static class DependencyInjectionChallenges
         public string GetReportText() => "Report";
     }
 
+    //------------------------------------------------------------------------------------------------------------------
     // Aufgabe 2: 
     // Problem: Service Locator Anti-Pattern durch direkten Zugriff auf IServiceProvider in Methoden.
     // Wie kann man die versteckte Abhängigkeit entfernen?
@@ -40,8 +42,9 @@ public static class DependencyInjectionChallenges
         }
     }
 
+    //------------------------------------------------------------------------------------------------------------------
     // Aufgabe 3: 
-    // Verwende in deinem Projekt um DI zu testen
+    // Verwende in deinem Projekt AssertServiceCollectionExtensions Klasse um DI Registrierungen zu testen
 
 
 }

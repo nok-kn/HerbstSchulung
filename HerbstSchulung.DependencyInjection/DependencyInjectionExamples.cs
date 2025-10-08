@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Scrutor;
+using Testing;
 
 namespace HerbstSchulung.DependencyInjection;
 
@@ -177,7 +178,9 @@ public static class DependencyInjectionExamples
             .WithSingletonLifetime());
 
         using var provider = services.BuildServiceProvider();
-
+        
+        // AssertServiceCollectionExtensions.ShouldResolveAllRegisteredServices(services);
+        
         // Test der automatisch registrierten Services
         try
         {

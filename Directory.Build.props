@@ -9,7 +9,7 @@
 	         netstandard nur für Bibliotheken die auf älteren .NET Versionen laufen müssen -->
 		<TargetFramework>net8.0</TargetFramework>
 
-		<!-- Legt die C#-Sprachversion auf die neueste fest -->
+		<!-- LangVersion legt die C#-Sprachversion fest -->
 		<!-- Empfehlung: latest -->
 		<LangVersion>latest</LangVersion>
 
@@ -18,17 +18,19 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Behandelt alle Warnungen als Fehler -->
-		<!-- Empfehlung: immer true für neue Projekte -->
+		<!-- Empfehlung:  1. immer true für neue Projekte 
+		             oder 2. immer true in CI Build
+					   -->
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		
+		<!-- Konkrete Warnungen auschliessen:
+		     NU1900 Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.
+		 -->
+		<WarningsNotAsErrors>NU1900</WarningsNotAsErrors>
 
-		<!-- Aktiviert deterministische Builds für reproduzierbare Ergebnisse
-			Wenn diese Eigenschaft auf "true" gesetzt ist, stellt MSBuild sicher, dass Builds reproduzierbar sind. Das bedeutet:
-			- Der Build-Output ist bytegenau identisch, wenn Quellcode, Abhängigkeiten und Build-Umgebung unverändert sind.
-			- Zeitstempel, GUIDs und andere nicht-deterministische Daten werden ausgeschlossen oder normalisiert.
-			- Nützlich zur Überprüfung, dass ein veröffentlichtes Binary dem Quellcode entspricht (z.B. für Sicherheit, Compliance oder Open-Source-Verteilung).
-			- Unterstützt Caching in CI/CD-Systemen, da unveränderte Builds nicht neu gebaut oder getestet werden müssen.
-			Diese Eigenschaft wird für moderne .NET-Projekte empfohlen, um reproduzierbare Builds zu gewährleisten. -->
-		<Deterministic>true</Deterministic>
+		<!-- oder um nur bestimmte Warnungen als Fehler zu behandeln:
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+		-->
 
 		<!-- ImplicitUsings
 		Vorteile:
