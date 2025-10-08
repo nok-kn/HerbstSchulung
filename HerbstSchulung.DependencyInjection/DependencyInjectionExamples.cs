@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Scrutor;
 
 namespace HerbstSchulung.DependencyInjection;
 
@@ -150,7 +151,62 @@ public static class DependencyInjectionExamples
         var aggregator = provider.GetRequiredService<AggregatNotifier>();
         aggregator.SendeAnAlle("Nachricht via AggregatNotifier");
     }
- 
+
+    /// <summary>
+    /// Demonstriert automatische Service-Registrierung mit Scrutor.
+    /// Scrutor scannt Assemblies und registriert Services basierend auf Namenskonventionen oder Attributen.
+    /// </summary>
+    public static void ScrutorRegistrierung()
+    {
+        var services = new ServiceCollection();
+        
+        // Automatische Registrierung aller Services die auf "Service" enden
+        // und ein entsprechendes Interface haben (z.B. ICalculatorService -> CalculatorService)
+        services.Scan(scan => scan
+            .FromCallingAssembly()
+            .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Service")))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
+
+        // Registrierung mit spezifischen Namenskonventionen
+        services.Scan(scan => scan
+            .FromCallingAssembly()
+            .AddClasses(classes => classes.InNamespaceOf(typeof(DependencyInjectionExamples)))
+            .UsingRegistrationStrategy(RegistrationStrategy.Skip) // Überspringe bereits registrierte Services
+            .AsMatchingInterface()
+            .WithSingletonLifetime());
+
+        using var provider = services.BuildServiceProvider();
+
+        // Test der automatisch registrierten Services
+        try
+        {
+            var calculator = provider.GetService<ICalculatorService>();
+            if (calculator != null)
+            {
+                Console.WriteLine($"CalculatorService automatisch registriert. Testing 5 + 3 = {calculator.Add(5, 3)}");
+            }
+            else
+            {
+                Console.WriteLine("CalculatorService wurde nicht automatisch registriert");
+            }
+
+            var validator = provider.GetService<IDataValidator>();
+            if (validator != null)
+            {
+                Console.WriteLine($"DataValidator automatisch registriert: {validator.IsValid("test@example.com")}");
+            }
+            else
+            {
+                Console.WriteLine("DataValidator wurde nicht automatisch registriert");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fehler beim Auflösen der Services: {ex.Message}");
+        }
+    }
+
     public interface IUhrzeitProvider
     {
         DateTime AktuelleZeit();
@@ -238,5 +294,25 @@ public static class DependencyInjectionExamples
             foreach (var n in notifiers)
                 n.Senden(nachricht);
         }
+    }
+
+    public interface ICalculatorService
+    {
+        int Add(int a, int b);
+    }
+
+    public class CalculatorService : ICalculatorService
+    {
+        public int Add(int a, int b) => a + b;
+    }
+
+    public interface IDataValidator
+    {
+        bool IsValid(string data);
+    }
+
+    public class DataValidator : IDataValidator
+    {
+        public bool IsValid(string data) => !string.IsNullOrWhiteSpace(data) && data.Contains('@');
     }
 }

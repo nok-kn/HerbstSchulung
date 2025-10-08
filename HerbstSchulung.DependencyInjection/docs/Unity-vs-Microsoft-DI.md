@@ -16,7 +16,7 @@
 
 ## Wann Unity?
 - Bedarf an Interception / AOP out-of-the-box
-- Notwendig: Child Container Hierarchien
+- Wenn notwendig: Child Container Hierarchien
 - Bereits bestehende Investition / Legacy Code nutzt Unity intensiv
 
 ## Wann Microsoft DI?
@@ -44,13 +44,9 @@ var email = provider.GetRequiredKeyedService<INotifier>("email");
 
 ## Migrationshinweise von Unity zu MS.DI
 - Prüfen welche Unity-spezifischen Features (Interception, Child Container) genutzt werden
-- Dekoratoren statt Interception einsetzen
 - Scopes statt Child Container
 - Eigene Factories / delegierte Registrierungen nutzen
-- Für komplexe Szenarien ggf. spezialisierten Container (Autofac / Lamar) evaluieren
 
 ## Zusätzliche Ressourcen
 - MS Docs DI: https://learn.microsoft.com/dotnet/core/extensions/dependency-injection
-- Scrutor (Assembly Scanning, Dekoratoren): https://github.com/khellang/Scrutor
 - Unity Container GitHub: https://github.com/unitycontainer/unity
-- Performance Vergleich (Blog von Steven / Simple Injector): https://blog.ploeh.dk (Allgemeine DI Diskussionen)
