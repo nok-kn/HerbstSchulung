@@ -43,7 +43,7 @@ public class AsyncChallenges
 
     //------------------------------------------------------------------------------------------------------------------
     // Aufgabe 3: Korrigiere/verbessere fehlerhafte/nicht ganz optimale Implementierung
-    private async Task FindCatsInVideos()
+    public async Task FindCatsInVideos()
     {
         var videos = new List<Video> { new(), new() };
         int catCount = 0;
