@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<Description>Workshop-Modul: Dependency Injection (Beispiele, Herausforderungen, Lösungen)</Description>
+		<Description>Workshop-Modul: Dependency Injection</Description>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" Version="8.7.1" />
