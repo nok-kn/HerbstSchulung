@@ -23,7 +23,7 @@ public sealed class AsyncConstructorExample
 
     private async Task InitAsync()
     {
-        await Task.Delay(5).ConfigureAwait(false); // Simulation
+        await Task.Delay(5); 
         Initialisiert = true;
     }
 }
