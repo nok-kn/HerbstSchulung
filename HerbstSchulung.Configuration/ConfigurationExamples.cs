@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
 
 namespace HerbstSchulung.Configuration
 {
@@ -44,7 +45,7 @@ namespace HerbstSchulung.Configuration
 
             // Binding configuration => C# Klasse
             services.Configure<MeineOptionen>(configuration.GetSection(nameof(MeineOptionen)));
-            
+
             var provider = services.BuildServiceProvider();
             
             var service = provider.GetRequiredService<MeineService>();
@@ -80,6 +81,11 @@ namespace HerbstSchulung.Configuration
             var services = new ServiceCollection();
 
             services.Configure<MeineOptionen>(configuration.GetSection(nameof(MeineOptionen)));
+            
+            // oder:
+            // services.AddSingleton<IConfiguration>(configuration);
+            // services.AddOptions<MeineOptionen>().BindConfiguration(nameof(MeineOptionen));
+
 
             // Services, die verschiedene Varianten injizieren
             services.AddTransient<MeineService>();                  // nutzt IOptions (Singleton-Snapshot beim Container-Bau)
@@ -129,6 +135,63 @@ namespace HerbstSchulung.Configuration
                 Console.WriteLine(eintrag);
             }
 
+        }
+
+        /// <summary>
+        /// Beispiel: Konfiguration mit Validierung (DataAnnotations und benutzerdefinierte Regel)
+        /// </summary>
+        public void OptionenMitValidierung()
+        {
+            // Beispiel-Konfiguration mit absichtlich fehlerhaften Werten
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    [$"{nameof(ValidierteOptionen)}:{nameof(ValidierteOptionen.Name)}"] = "Al",        // zu kurz (MinLength 3)
+                    [$"{nameof(ValidierteOptionen)}:{nameof(ValidierteOptionen.Alter)}"] = "15",       // zu jung (Custom-Validierung verlangt >=18)
+                    [$"{nameof(ValidierteOptionen)}:{nameof(ValidierteOptionen.Email)}"] = "keineMail" // kein gültiges Email-Format
+                })
+                .Build();
+
+            var services = new ServiceCollection();
+            services.AddSingleton<IConfiguration>(config);
+            services.AddOptions<ValidierteOptionen>()
+                .BindConfiguration(nameof(ValidierteOptionen)) 
+                .ValidateDataAnnotations()                     // benötigt Options.DataAnnotations package
+                .Validate(CustomValidierung, "Custom-Validierung fehlgeschlagen (Alter < 18)");
+                
+            // IOptions auflösen und Validierungsfehler anzeigen
+            using var provider = services.BuildServiceProvider();
+            try
+            {
+                var options = provider.GetRequiredService<IOptions<ValidierteOptionen>>();
+                // Zugriff erzwingt Validierung
+                _ = options.Value;
+                Console.WriteLine("Validierung OK (unerwartet)");
+            }
+            catch (OptionsValidationException ex)
+            {
+                Console.WriteLine("Validierungsfehler gefunden:");
+                foreach (var failure in ex.Failures)
+                {
+                    Console.WriteLine(" - " + failure);
+                }
+            }
+
+            // Nun gültige Werte setzen 
+            config[$"{nameof(ValidierteOptionen)}:{nameof(ValidierteOptionen.Name)}"] = "Alice";
+            config[$"{nameof(ValidierteOptionen)}:{nameof(ValidierteOptionen.Alter)}"] = "30";
+            config[$"{nameof(ValidierteOptionen)}:{nameof(ValidierteOptionen.Alter)}"] = "alice@example.com";
+            config.Reload();
+
+            using var scope = provider.CreateScope();
+            var snapshots = scope.ServiceProvider.GetRequiredService<IOptionsSnapshot<ValidierteOptionen>>();
+            Console.WriteLine($"Nach Korrektur: Name={snapshots.Value.Name}, Alter={snapshots.Value.Alter}, Email={snapshots.Value.Email}");
+        }
+
+        private static bool CustomValidierung(ValidierteOptionen opt)
+        {
+            // Benutzerspezifische Regel: Nur Volljährige zulassen
+            return opt.Alter >= 18;
         }
     }
 
@@ -191,5 +254,19 @@ namespace HerbstSchulung.Configuration
     public class MeineMonitorCallbackCollector
     {
         public List<string> Aenderungen { get; } = new();
+    }
+
+    public class ValidierteOptionen
+    {
+        [Required]
+        [MinLength(3)]
+        public string Name { get; set; } = string.Empty;
+
+        [Range(1, 120)]
+        public int Alter { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
     }
 }
