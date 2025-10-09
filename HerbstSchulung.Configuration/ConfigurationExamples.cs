@@ -101,7 +101,12 @@ namespace HerbstSchulung.Configuration
             }
 
             // Änderung der Konfiguration zur Laufzeit
-            configuration["MeineOptionen:Name"] = "Bob"; // Triggert Reload für IOptionsMonitor + neue Snapshots
+            configuration["MeineOptionen:Name"] = "Bob";
+            
+            // aber (!) AddInMemoryCollection emittiert kein Change-Token beim Setzen
+            // Damit IOptionsMonitor sein OnChange erhält, explizit Reload am IConfigurationRoot ausführen.
+            configuration.Reload();
+            
             Console.WriteLine();
             Console.WriteLine("Nach Konfigurationsänderung (Name=Bob)");
 
