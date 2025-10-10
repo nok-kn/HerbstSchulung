@@ -28,13 +28,13 @@ public class AsyncChallenges
 
     //------------------------------------------------------------------------------------------------------------------
     // Aufgabe 2: Korrigiere/verbessere fehlerhafte/nicht ganz optimale Implementierung
-    public async Task<string> TicToc()
+    public async Task<string> TikTok()
     {
-        await Task.Factory.StartNew(async () => await DownloadExcitingVideosFromTicToc());
+        await Task.Factory.StartNew(async () => await DownloadExcitingVideosFromTikTok());
         return "I'm ready";
     }
 
-    private Task DownloadExcitingVideosFromTicToc()
+    private Task DownloadExcitingVideosFromTikTok()
     {
         return Task.Delay(10000);
     }
