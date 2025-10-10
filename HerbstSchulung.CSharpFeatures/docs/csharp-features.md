@@ -1,4 +1,4 @@
-# Kurzüberblick C#-Features der letzten Jahre - C# 6 bis C# 12   
+# Kurzüberblick C#-Features der letzten Jahre - C# 6 bis C# 14   
 
 | Feature | Ab C#-Version | Beispiel |
 |---|---|---|
@@ -48,4 +48,6 @@
 | Partial Constructors | 14 | `public partial class C { partial C(); }` |
 
 
-Weitere Details: Microsoft-Dokumentation zu C#-Sprachfeatures (learn.microsoft.com).
+Weitere Details: Microsoft Dokumentation zu C#-Sprachfeatures 
+https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-14
+
