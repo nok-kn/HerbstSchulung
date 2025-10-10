@@ -31,5 +31,21 @@
 | Collection Expressions | 12 | int[] xs = [1, 2, 3]; var ys = new List<int> [.. xs, 4]; |
 | Alias für beliebige Typen | 12 | using IntList = List<int>; |
 | Default-Parameter in Lambdas | 12 | var f = (int x = 42) => x; |
+| params Collections | 13 | `void M(params ReadOnlySpan<int> xs) { }` |
+| Neuer Lock-Typ | 13 | `Lock myLock = new(); lock (myLock) { }` |
+| \e Escape Sequence | 13 | `char esc = '\e'; // statt \u001b` |
+| Implicit Index in Initializer | 13 | `var arr = new int[10] { [^1] = 99 };` |
+| ref struct Interfaces | 13 | `ref struct MySpan : IDisposable { }` |
+| allows ref struct Constraint | 13 | `void M<T>() where T : allows ref struct { }` |
+| Partial Properties | 13 | `public partial class C { public partial string Name { get; set; } }` |
+| Overload Resolution Priority | 13 | `[OverloadResolutionPriority(1)] void M(int x) { }` |
+| field Keyword (Preview) | 13 | `public int P { get => field; set => field = value; }` |
+| Extension Types | 14 | `implicit extension MyExt for string { public int Len => this.Length; }` |
+| Extended nameof | 14 | `var name = nameof(person.Name.Length);` |
+| Implicit Span Conversions | 14 | `ReadOnlySpan<char> span = "text";` |
+| Lambda Improvements | 14 | `var f = (ref int x) => x++;` |
+| Dictionary Expressions | 14 | `var dict = ["key": value, "key2": value2];` |
+| Partial Constructors | 14 | `public partial class C { partial C(); }` |
+
 
 Weitere Details: Microsoft-Dokumentation zu C#-Sprachfeatures (learn.microsoft.com).
