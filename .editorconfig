@@ -214,15 +214,17 @@ csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental
 csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = true:silent
 csharp_style_conditional_delegate_call = true:suggestion
 
+# Suppressions for style rules we don't want to follow
 # IDE0008: Use explicit type
 dotnet_diagnostic.IDE0008.severity = none
-
-# IDE0055: Fix formatting
-dotnet_diagnostic.IDE0055.severity = suggestion
+# IDE0022: Use block body for method
+dotnet_diagnostic.IDE0022.severity = none
+# IDE0021: Use block body for constructor
+dotnet_diagnostic.IDE0021.severity = none
 
  
 # High risk compiler warnings
-
+# 
 # CS4014: Because this call is not awaited, execution of the current method continues before the call is completed
 dotnet_diagnostic.CS4014.severity = warning
 # CS1998: Async method lacks 'await' operators and will run synchronously
@@ -278,5 +280,3 @@ dotnet_diagnostic.CA3075.severity = warning
 dotnet_diagnostic.CA5350.severity = warning
 dotnet_diagnostic.CA5351.severity = warning
 
-# IDE0021: Use block body for constructor
-dotnet_diagnostic.IDE0021.severity = none
