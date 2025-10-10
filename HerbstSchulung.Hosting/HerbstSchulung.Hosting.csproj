@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+
+		<!--
+		FrameworkReference verweist auf das ASP.NET Core Shared Framework, das mit .NET installiert wird (kein NuGet-Paket, keine PackageReference).
+		Zur Laufzeit lädt eine frameworkabhängige App die höchstinstallierte 8.0.x-Version des ASP.NET Core Shared Frameworks auf der Maschine (Patch-Rollforward).
+		
+		Wann verwenden?
+		- FrameworkReference (Microsoft.AspNetCore.App): Wenn die App ASP.NET Core hostet (Minimal APIs, Kestrel, MVC/Razor Pages, SignalR, gRPC, Middleware) und das Shared Framework der installierten .NET-Laufzeit nutzen soll (Patch-Rollforward). Typisch für Web-/Host-Projekte.
+		- NuGet-Pakete: Für Bibliotheken, um Konsumenten nicht an ASP.NET Core zu koppeln
+
+		Tips:
+		- Keine Microsoft.AspNetCore.*, Microsoft.Extensions.*  Pakete referenzieren, die bereits Teil des Shared Frameworks sind (Konfliktgefahr).
+		- FrameworkReference wird nicht versioniert; die Version kommt von der installierten Runtime. Steuerung über global.json, <RuntimeFrameworkVersion>, rollForward oder self-contained Publish.
+		-->
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\HerbstSchulung.Hosting.Services\HerbstSchulung.Hosting.Services.csproj" />
+	</ItemGroup>
+</Project>
