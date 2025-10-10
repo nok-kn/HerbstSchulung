@@ -9,7 +9,7 @@
 ## Projekte im Überblick
 - HerbstSchulung.Nullable
   - Beispiele zu Nullable Reference Types und Records (z. B. Fahrzeug, RecordExamples)
-- - HerbstSchulung.Async
+- HerbstSchulung.Async
   - Async/await-Beispiele, z. B. Anti-Pattern „Async im Konstruktor“ (AsyncConstructorExample)
   - Begleitende Unit-Tests im Projekt HerbstSchulung.Async.Tests
 - HerbstSchulung.Configuration
