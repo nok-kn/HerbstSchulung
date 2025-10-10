@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace HerbstSchulung.Nullable
+namespace HerbstSchulung.CSharpFeatures
 {
     // Diese Klasse zeigt verschiedene Beispiele für C# Records.
     public static class RecordExamples

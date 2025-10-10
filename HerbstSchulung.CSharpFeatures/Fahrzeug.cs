@@ -1,5 +1,5 @@
 // Beispielklasse für required und init Properties
-namespace HerbstSchulung.Nullable;
+namespace HerbstSchulung.CSharpFeatures;
 
 public class Fahrzeug
 {

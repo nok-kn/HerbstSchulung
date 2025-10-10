@@ -1,4 +1,4 @@
-﻿namespace HerbstSchulung.Nullable;
+﻿namespace HerbstSchulung.CSharpFeatures;
 
 
 // Die Klasse Person demonstriert die Verwendung von nicht-nullbaren und nullable Strings

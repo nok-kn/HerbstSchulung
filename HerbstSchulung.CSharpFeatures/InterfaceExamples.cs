@@ -1,4 +1,4 @@
-﻿namespace HerbstSchulung.Nullable
+﻿namespace HerbstSchulung.CSharpFeatures
 {
     // Standardimplementierungen
     public interface IHasTimestamp
