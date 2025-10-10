@@ -41,7 +41,6 @@
 | Overload Resolution Priority | 13 | `[OverloadResolutionPriority(1)] void M(int x) { }` |
 | field Keyword (Preview) | 13 | `public int P { get => field; set => field = value; }` |
 | Extension Types | 14 | `implicit extension MyExt for string { public int Len => this.Length; }` |
-| Extended nameof | 14 | `var name = nameof(person.Name.Length);` |
 | Implicit Span Conversions | 14 | `ReadOnlySpan<char> span = "text";` |
 | Lambda Improvements | 14 | `var f = (ref int x) => x++;` |
 | Dictionary Expressions | 14 | `var dict = ["key": value, "key2": value2];` |
