@@ -10,7 +10,8 @@
 		<TargetFramework>net8.0</TargetFramework>
 
 		<!-- LangVersion legt die C#-Sprachversion fest -->
-		<!-- Empfehlung: latest -->
+		<!-- Empfehlung: weg lassen (automatische Zuordnung zur TargetFramework Version. Jede .NET-Version hat eine Standard-C#-Version: z.B. C#12 für .NET 8)
+		                oder latest  -->
 		<LangVersion>latest</LangVersion>
 
 		<!-- Aktiviert Nullable Reference Types für bessere Null-Sicherheit -->
