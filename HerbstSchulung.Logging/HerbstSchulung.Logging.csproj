@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+        <!-- Microsoft.Extensions.Logging stellt die Abstraktionen (ILogger, ILoggerFactory, LogLevel etc.) bereit -->
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.9" />
+        <!-- Provider für Console-Logging und AddConsole()-Erweiterung -->
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.9" />
+        <!-- Für DI-Beispiele (ServiceCollection, AddLogging()) -->
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+    </ItemGroup>
+</Project>
