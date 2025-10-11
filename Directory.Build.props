@@ -48,7 +48,6 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <LockFileFormat>2</LockFileFormat>
 
 
     </PropertyGroup>
