@@ -13,17 +13,19 @@
   - Async/await-Beispiele und Anti-Patter
   - Begleitende Unit-Tests im Projekt HerbstSchulung.Async.Tests
 - HerbstSchulung.Configuration
-  - Beispiele f�r Microsoft.Extensions.Configuration und Options Pattern
+  - Beispiele für Microsoft.Extensions.Configuration und Options Pattern
   - IOptions, IOptionsSnapshot, IOptionsMonitor und Validierung (DataAnnotations, benutzerdefiniert)
   - appsettings.json sowie In-Memory-Konfiguration
 - HerbstSchulung.DependencyInjection
   - Beispiele und Übungen zu Microsoft.Extensions.DependencyInjection
   - Lebensdauern (Transient/Scoped/Singleton), ServiceCollection-Erweiterungen
-- HerbstSchulung.Hosting
+- HerbstSchulung.Logging
+  - Beispiele zu Microsoft.Extensions.Logging,Log-Level, Kategorien, strukturierte Logs    
+- - HerbstSchulung.Hosting
   - Generischer Host, BackgroundService/Worker (TimeLoggingWorker)
   - Integration von Services und Konfiguration
 - HerbstSchulung.Hosting.Abstractions
-  - Abstraktionen/Contracts f�r Services 
+  - Abstraktionen/Contracts für Services 
 - HerbstSchulung.Hosting.Services
   - Service-Implementierungen  und DI Registrierung
 
