@@ -35,13 +35,14 @@ Doch in der Praxis birgt dieser Ansatz erhebliche Risiken und Problemen – beso
 - Wer wartet das Paket? Wer testet es? Wer entscheidet über neue Features?
 - Häufig entsteht **„Shared Nothing“-Ownership**: Niemand fühlt sich wirklich verantwortlich.
 
-
 ---
 
 ## Bessere Alternativen
 
-### **Standard Pakete zu benutzen - Microsoft.Extensions**
-- keine eigene multi-solution Frameworks bauen
+### **Standard und eigene Pakete beworzugen
+- Microsoft.Extensions.* (Logging, Configuration, Hosting, DependencyInjection, Options, Caching, HealthChecks, etc)
+- keine eigene "multi-team" Frameworks bauen
+- YAGNI: zuerst eine eigene Lösung nur in deinem Projekt benutzen, nicht denken, das könnte ja mal jemand anderes brauchen
 
 ### **Mehrere kleine, fokussierte Pakete**
 Statt `MyCompany.Common` → besser:
