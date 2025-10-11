@@ -81,7 +81,8 @@ Projektspezifische Abweichung (nur im Ausnahmefall):
 ## Versionierungsstrategie
 - Fixe, explizite Versionen in Directory.Packages.props; keine Floating-Versionen (1.2.*)
 - Regelmäßige, gebündelte Updates (z. B. ein mal pro Sprint einplannen)
-- Major Upgrades isoliert testen; Upgrades als einzelnes PR.
+- Major Upgrades isoliert testen
+- Upgrades als einzelnes PR
 
 ## Transitive Abhängigkeiten
 - Wenn möglich transitive Pinning aktivieren, um Build-Drift zu vermeiden.
@@ -129,6 +130,7 @@ graph TD
 ## Reproduzierbarkeit und Nachvollziehbarkeit
 - Lock-Dateien nutzen (packages.lock.json) 
   - <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  - <LockFileFormat>3</LockFileFormat> (verbesserte Struktur, bessere Abhängigkeiten)
   - dotnet restore --locked-mode im CI
 - Nachteil: Lock-Datei muss manuell aktualisiert werden
 - NuGet-Quellen zentral in NuGet.config definieren (auth, Mirroring, Cache-Strategie).
