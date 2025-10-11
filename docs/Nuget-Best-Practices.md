@@ -47,6 +47,7 @@ Projektspezifische Abweichung (nur im Ausnahmefall):
 ## Transitive Abhängigkeiten
 - Wenn möglich transitive Pinning aktivieren, um Build-Drift zu vermeiden.
 
+```mermaid
 graph TD
     A["🔷 Mein Projekt"]
     B["📦 Package A<br/>v1.2.3"]
@@ -58,6 +59,7 @@ graph TD
     style A fill:#e1f5ff
     style B fill:#fff3e0
     style C fill:#f3e5f5
+```
 
 ## PrivateAssets/IncludeAssets
 - Entwicklungs-/Test-Pakete nicht weitertransitiv machen:
