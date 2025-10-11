@@ -5,6 +5,47 @@
 - Geringere Wartungskosten und klare Verantwortlichkeiten
 - Sicherheit und Compliance sicherstellen
 
+# Semantische Versionierung (Semantic Versioning)
+
+Format: **MAJOR.MINOR.PATCH** (z.B. `2.8.1`)
+
+| Teil | Bedeutung | Beispiel |
+|------|-----------|---------|
+| **MAJOR** | Breaking Changes – alte Code funktioniert nicht mehr | `1.0.0` → `2.0.0` |
+| **MINOR** | Neue Features – abwärtskompatibel | `2.0.0` → `2.1.0` |
+| **PATCH** | Bugfixes – abwärtskompatibel | `2.1.0` → `2.1.1` |
+
+
+## Praktische Beispiele
+
+```
+xunit.runner.visualstudio 2.8.1
+├─ 2 = MAJOR (große Änderungen)
+├─ 8 = MINOR (neue Features)
+└─ 1 = PATCH (Bugfix)
+```
+
+**Upgrade sicher?**
+- `2.8.0` → `2.8.1` ✅ Immer sicher (nur Bugfix)
+- `2.8.1` → `2.9.0` ✅ Meistens sicher (neue Features)
+- `2.8.1` → `3.0.0` ⚠️ Vorsicht! (Breaking Changes)
+
+
+
+## In Version-Ranges
+
+```
+2.8.1    = exakt diese Version
+2.*      = alle 2.x Versionen (2.0.0, 2.8.1, 2.99.0)
+^2.8.1   = 2.8.1 bis <3.0.0 (MINOR/PATCH-Updates)
+~2.8.1   = 2.8.1 bis <2.9.0 (nur PATCH-Updates)
+```
+
+## Faustregel
+
+Je höher die Versionsnummer springt, desto vorsichtiger solltest du upgraden!
+
+
 ## Zentrales Paketmanagement (CPM)
 - Eine Directory.Packages.props im Lösungsstamm nutzen.
 - In Projektdateien keine Versionen angeben
