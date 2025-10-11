@@ -2,8 +2,8 @@
 
 Die Idee, ein oder mehrere **gemeinsame NuGet-Pakete**  für alle Projekte im Unternehmen/Abteilung zu erstellen klingt auf den ersten Blick sinnvoll:  
 > *"Don’t repeat yourself", Konsistenz, zentrale Wartung.*
-> *"Alle Entwickler benutzen endlich ein Standart*
-> 
+> *"Alle Entwickler benutzen endlich ein Standart*"
+ 
 Doch in der Praxis birgt dieser Ansatz erhebliche Risiken und Problemen – besonders wenn Paketie **zu breit gefasst** oder **zu eng gekoppelt** ist.
 
 ---
@@ -30,7 +30,7 @@ Doch in der Praxis birgt dieser Ansatz erhebliche Risiken und Problemen – beso
 - Angst vor Breaking Changes führt zu **veraltetem Code**.
 - Der "dead code" in common libs ist schwierig zu endecken und entfernen
 - Wenn ein Team eine bessere Lösung finden möchte, ist der Ausstieg aufwendig – wegen tiefer Integration.
-- 
+ 
 ### 5. **Unklare Verantwortlichkeit**
 - Wer wartet das Paket? Wer testet es? Wer entscheidet über neue Features?
 - Häufig entsteht **„Shared Nothing“-Ownership**: Niemand fühlt sich wirklich verantwortlich.
@@ -50,7 +50,7 @@ Statt `MyCompany.Common` → besser:
 - `MyCompany.Configuration`
 - `MyCompany.Validation`
 - `MyCompany.Resources.Icons`
-- 
+ 
 Jedes Paket hat:
 - Einen klaren Zweck
 - Unabhängige Versionierung
@@ -61,11 +61,11 @@ Jedes Paket hat:
 - Keine Buisness Logik 
 
 ### **Beipiel SLA**
-Reaktionszeit bei Bugs -Kritische Bugs (z. B. Sicherheitslücken) werden innerhalb von 2 Werktagen behoben
-Release-Zyklen - Neue Minor-Versionen erscheinen maximal alle 4 Wochen. Patch-Releases bei Bedarf
-Breaking Changes - Breaking Changes werden mindestens 2 Monate im Voraus angekündigt und sind nur in Major-Versionen erlaubt
-Support-Dauer - Die letzten zwei Major-Versionen werden aktiv unterstützt
-Dokumentation - Jede Version wird mit Changelog, Migrationsanleitung und API-Dokumentation veröffentlicht
+- Reaktionszeit bei Bugs - Kritische Bugs (z. B. Sicherheitslücken) werden innerhalb von 2 Werktagen behoben
+- Release-Zyklen - Neue Minor-Versionen erscheinen maximal alle 4 Wochen. Patch-Releases bei Bedarf
+- Breaking Changes - Breaking Changes werden mindestens 2 Monate im Voraus angekündigt und sind nur in Major-Versionen erlaubt
+- Support-Dauer - Die letzten zwei Major-Versionen werden aktiv unterstützt
+- Dokumentation - Jede Version wird mit Changelog, Migrationsanleitung und API-Dokumentation veröffentlicht
 
 
 ### **Architektur Regeln und Automation statt Code-Enforcement**  
@@ -74,9 +74,9 @@ Dokumentation - Jede Version wird mit Changelog, Migrationsanleitung und API-Dok
 - Copy und Paste Code bewusst akzeptieren
 - Automatisierte Code Qualitätschecks (.editorconfig)
 - Gemeinsame Architektur Prinzipien – nicht gemeinsamer Code. z.B.
-  -- API-First-Design - Alle externen Schnittstellen (HTTP, Messaging) werden als Vertrag definiert. HTTP-APIs: OpenAPI/Swagger 
-  -- Infrastruktur als Code (IaC) - Alle Umgebungen (Dev, Test, Prod) werden deklarativ und versioniert bereitgestellt
-  -- UI unf UX Guideline - geimensame Resources (icons, WPF Styles, Tailwind CSS Styles etc) - ja. Profesionalle Biblotheken (z.B. DevExpress WPF Themes) statt individualen Komponenten. Design System Owner Rolle definieren – Designer/in oder Dev mit Verantwortung für Konsistenz. UI und UX Review auch machen
+  - API-First-Design - Alle externen Schnittstellen (HTTP, Messaging) werden als Vertrag definiert. HTTP-APIs: OpenAPI/Swagger 
+  - Infrastruktur als Code (IaC) - Alle Umgebungen (Dev, Test, Prod) werden deklarativ und versioniert bereitgestellt
+  - UI unf UX Guideline - geimensame Resources (icons, WPF Styles, Tailwind CSS Styles etc) - ja. Profesionalle Biblotheken (z.B. DevExpress WPF Themes) statt individualen Komponenten. Design System Owner Rolle definieren – Designer/in oder Dev mit Verantwortung für Konsistenz. UI und UX Review auch machen
 
 
 
