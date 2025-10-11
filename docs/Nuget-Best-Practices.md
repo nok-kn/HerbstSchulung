@@ -130,7 +130,6 @@ graph TD
 ## Reproduzierbarkeit und Nachvollziehbarkeit
 - Lock-Dateien nutzen (packages.lock.json) 
   - <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-  - <LockFileFormat>3</LockFileFormat> (verbesserte Struktur, bessere Abhängigkeiten)
   - dotnet restore --locked-mode im CI
 - Nachteil: Lock-Datei muss manuell aktualisiert werden
 - NuGet-Quellen zentral in NuGet.config definieren (auth, Mirroring, Cache-Strategie).
