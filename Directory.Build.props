@@ -47,8 +47,5 @@
 		<!-- Empfehlung: mit Vorsicht geniessen, nur für standard Standard-Namespaces benutzen  -->
 		<ImplicitUsings>enable</ImplicitUsings>
 
-        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-
-
     </PropertyGroup>
 </Project>
