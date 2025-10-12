@@ -1,9 +1,9 @@
-# Interaktives Quiz zu .NET-Konzepten (leicht & gelegentlich witzig)
+# Quiz 
 
 Anleitung
 - SC = Single Choice (genau eine Antwort richtig)
 - MC = Multiple Choice (eine oder mehrere Antworten richtig)
-- Kreuze an, dann Lösung aufklappen
+- Überlege Antwort, dann Lösung aufklappen
 
 ---
 
