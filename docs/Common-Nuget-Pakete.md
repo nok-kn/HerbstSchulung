@@ -39,7 +39,8 @@ Doch in der Praxis birgt dieser Ansatz erhebliche Risiken und Problemen – beso
 
 ## Bessere Alternativen
 
-### **Standard und eigene Pakete beworzugen
+### **Keine oder Standard oder eigene Pakete beworzugen
+- Brauchst du wirklich ein zusätzliches Paket?
 - Microsoft.Extensions.* (Logging, Configuration, Hosting, DependencyInjection, Options, Caching, HealthChecks, etc)
 - keine eigene "multi-team" Frameworks bauen
 - YAGNI: zuerst eine eigene Lösung nur in deinem Projekt benutzen, nicht denken, das könnte ja mal jemand anderes brauchen
@@ -73,11 +74,13 @@ Jedes Paket hat:
 - Common Basisklassen für mehrehre Solutions vermeiden 
 - "Favor composition over inheritance"
 - Copy und Paste Code bewusst akzeptieren
-- Automatisierte Code Qualitätschecks (.editorconfig)
-- Gemeinsame Architektur Prinzipien – nicht gemeinsamer Code. z.B.
+- Automatisierte Code Qualitätschecks (.editorconfig), ein AI Agent im CI/CD Pipeline, Code Reviews (Human)
+- Gemeinsame Architektur Prinzipien – nicht gemeinsamer Code. z.B.:
   - API-First-Design - Alle externen Schnittstellen (HTTP, Messaging) werden als Vertrag definiert. HTTP-APIs: OpenAPI/Swagger 
   - Infrastruktur als Code (IaC) - Alle Umgebungen (Dev, Test, Prod) werden deklarativ und versioniert bereitgestellt
-  - UI unf UX Guideline - geimensame Resources (icons, WPF Styles, Tailwind CSS Styles etc) - ja. Profesionalle Biblotheken (z.B. DevExpress WPF Themes) statt individualen Komponenten. Design System Owner Rolle definieren – Designer/in oder Dev mit Verantwortung für Konsistenz. UI und UX Review auch machen
+  - UI unf UX Guideline - geimensame Resources (icons, WPF Styles, Tailwind CSS Styles etc) - ja.
+    Profesionalle Biblotheken (z.B. DevExpress WPF Themes) statt individualen Komponenten.
+    Design System Owner Rolle definieren – Designer/in oder Dev mit Verantwortung für Konsistenz. UI und UX Review auch machen
 
 
 

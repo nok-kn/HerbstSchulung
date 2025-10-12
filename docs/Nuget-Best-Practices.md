@@ -16,19 +16,10 @@ Format: **MAJOR.MINOR.PATCH** (z.B. `2.8.1`)
 | **PATCH** | Bugfixes – abwärtskompatibel | `2.1.0` → `2.1.1` |
 
 
-## Praktische Beispiele
-
-```
-xunit.runner.visualstudio 2.8.1
-├─ 2 = MAJOR (große Änderungen)
-├─ 8 = MINOR (neue Features)
-└─ 1 = PATCH (Bugfix)
-```
-
 **Upgrade sicher?**
-- `2.8.0` → `2.8.1` ✅ Immer sicher (nur Bugfix)
-- `2.8.1` → `2.9.0` ✅ Meistens sicher (neue Features)
-- `2.8.1` → `3.0.0` ⚠️ Vorsicht! (Breaking Changes)
+- `2.8.0` → `2.8.1` Immer sicher (nur Bugfix)
+- `2.8.1` → `2.9.0` Meistens sicher (neue Features)
+- `2.8.1` → `3.0.0` Vorsicht! (Breaking Changes)
 
 
 
@@ -139,12 +130,13 @@ graph TD
 - NuGet-Warnungen streng behandeln (z. B. WarningsAsErrors für NU* im CI).
 - eventuell: automatisierte Update Jobs (z. B. wöchentlich/monatlich) zur Pflege der Versionen in Directory.Packages.props einsetzen
 
-## Migrationsleitfaden (kurz)
+## Migration
 1. Alle csproj nach PackageReference mit Version scannen.
 2. Directory.Packages.props anlegen und Versionen als PackageVersion eintragen.
 3. Version-Attribute in csproj entfernen.
 4. Build testen, ggf. Konflikte mit Shared Framework beheben.
 5. Unnötige Pakete entfernen
+6. Pinning aktivieren
 
 ## Troubleshooting
 - NU1008: Versionen noch in csproj definiert → löschen, in Directory.Packages.props pflegen.
