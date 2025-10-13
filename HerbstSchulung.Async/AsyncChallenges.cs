@@ -1,7 +1,9 @@
+using System.Threading;
+
 namespace HerbstSchulung.Async;
 
 /// <summary>
-/// Herausforderungen/Aufgaben für Teilnehmer. 
+/// Herausforderungen/Aufgaben fÃ¼r Teilnehmer. 
 /// </summary>
 public class AsyncChallenges
 {
@@ -12,6 +14,13 @@ public class AsyncChallenges
         var t = new DbContex().ConnectToDatabase(connectionString);
         return await Task.FromResult(t.Result);
     }
+
+    public async Task<string> ConnectCorrect(string connectionString)
+    {
+        using var context = new DbContex();
+        return await context.ConnectToDatabase(connectionString);
+    }
+
 
     private class DbContex : IDisposable
     {
@@ -31,6 +40,12 @@ public class AsyncChallenges
     public async Task<string> TikTok()
     {
         await Task.Factory.StartNew(async () => await DownloadExcitingVideosFromTikTok());
+        return "I'm ready";
+    }
+
+    public async Task<string> TikTokCorrect()
+    {
+        await DownloadExcitingVideosFromTikTok();
         return "I'm ready";
     }
 
@@ -54,25 +69,55 @@ public class AsyncChallenges
         Console.WriteLine($"Found {catCount} cat videos");
     }
 
+    public async Task FindCatsInVideosCorrect()
+    {
+        var videos = new List<Video> { new(), new() };
+        var tasks = videos.Select(v => v.ContainsCat());
+        await Task.WhenAll(tasks);
+        
+        int catCount = 0;
+        foreach (var task in tasks)
+        {
+            catCount += task.Result ? 1 : 0;
+        }
+        Console.WriteLine($"Found {catCount} cat videos");
+    }
+
     private class Video
     {
         public Task<bool> ContainsCat() => Task.FromResult(true);
     }
-    
+
+    private readonly  SemaphoreSlim _semaphore = new SemaphoreSlim(3); // max 3 concurrent task
+
     //------------------------------------------------------------------------------------------------------------------
     // Aufgabe 4: lock + async = Problem
     // Ein direkter await innerhalb eines lock ist in C# nicht erlaubt (Compilerfehler).
-    // Deswegen greifen viele fälschlich zu .Result/.Wait() – genau das soll hier vermieden werden.
+    // Deswegen greifen viele fÃ¤lschlich zu .Result/.Wait() â€“ genau das soll hier vermieden werden.
     // HINWEIS: Ersetze den lock durch einen asynchronen Mechanismus(z.B.SemaphoreSlim)
     public int LockUndAsync()
     {
         lock (Gate)
         {
-            //.Result blockiert synchron, während der Monitor gehalten wird.
+            //.Result blockiert synchron, wÃ¤hrend der Monitor gehalten wird.
             // Das kann Deadlocks verursachen (z. B. wenn die Fortsetzung versucht, den gleichen Monitor/Synchronisationskontext zu nutzen)
             return LadeDatenAsync().Result;
         }
     }
+
+    public async Task<int> LockUndAsyncCorrect()
+    {
+        await _semaphore.WaitAsync(); // Wait to enter
+        try
+        {
+            return await LadeDatenAsync();
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
+    }
+
 
     private readonly object Gate = new();
 
@@ -103,6 +148,20 @@ public class AsyncChallenges
         }
         return string.Join(",", data);
     }
+
+    private async Task<string> ProcessDataCorrect(CancellationToken cancellationToken = default)
+    {
+        var data = new List<string>();
+        string calculatedData = string.Empty;
+        for (var i = 0; i < 1000; i++)
+        {
+            // cancellationToken.ThrowIfCancellationRequested();
+            calculatedData = await CalculateData(calculatedData, i, cancellationToken);
+            data.Add(calculatedData);
+        }
+        return string.Join(",", data);
+    }
+
 
     private Task<string> CalculateData(string previousData, int index, CancellationToken cancellationToken = default)
     {
