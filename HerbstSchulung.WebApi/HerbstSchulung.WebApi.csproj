@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <!-- XML-Dokumentation für Swagger einbinden -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.21" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Referenzen auf Implementierungen für DI -->
+        <ProjectReference Include="..\HerbstSchulung.Hosting.Services\HerbstSchulung.Hosting.Services.csproj" />
+    </ItemGroup>
+
+</Project>

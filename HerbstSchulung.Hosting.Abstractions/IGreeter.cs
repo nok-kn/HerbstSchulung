@@ -1,12 +1,14 @@
 namespace HerbstSchulung.Hosting.Abstractions;
 
 /// <summary>
-/// Einfache Begrüßungs-Schnittstelle, um DI und Logging zu demonstrieren.
+/// Einfache BegrÃ¼ÃŸungs-Schnittstelle, um DI und Logging zu demonstrieren.
 /// </summary>
 public interface IGreeter
 {
     /// <summary>
-    /// Gibt eine lokalisierte Begrüßung zurück.
+    /// Gibt eine lokalisierte BegrÃ¼ÃŸung zurÃ¼ck.
     /// </summary>
     string Greet(string? name);
+
+    Task<string>  GreetAsync(string name, CancellationToken cancellationToken) => Task.FromResult(Greet(name));
 }
