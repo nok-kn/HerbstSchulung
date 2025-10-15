@@ -10,18 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Dienste in DI registrieren konfigurieren
 builder.Services
-    // API-Controller inklusive automatische 400-Validierung
     .AddControllers(options =>
     {
         // Globale Filter hinzufügen (z. B. für Header/Logging etc.)
-        options.Filters.Add(new ProducesResponseTypeAttribute(typeof(ProblemDetails), StatusCodes.Status500InternalServerError));
-        options.Filters.Add(new ProducesResponseTypeAttribute(typeof(ProblemDetails), StatusCodes.Status400BadRequest));
         options.Filters.Add(new ServiceFilterAttribute(typeof(TimingActionFilter)));
     })
     .AddJsonOptions(o =>
     {
-        // Newtonsoft.Json geht langsam in Rente
-        // wir verwenden System.Text.Json
+        // Newtonsoft.Json geht langsam in Rente, man verwendet jetzt System.Text.Json ...
 
         // Konsistente JSON-Optionen: camelCase, Indentierung in Development
         o.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
@@ -71,7 +67,6 @@ builder.Services
     .AddInMemoryStorage();
 
 // Jetzt die App bauen
-
 var app = builder.Build();
 
 // Entwicklungs-spezifische Middleware
@@ -101,6 +96,34 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 
 // HealthChecks UI endpoint
 app.MapHealthChecksUI(options => options.UIPath = "/health-ui");
+ 
+// Startseite (Mini-API) mit Links zu Swagger und HealthChecks UI
+app.MapGet("/", () =>
+{
+    const string html = """
+                        <!doctype html>
+                        <html lang="en">
+                        <head>
+                          <meta charset="utf-8" />
+                          <meta name="viewport" content="width=device-width, initial-scale=1" />
+                          <title>HerbstSchulung API</title>
+                          <style>
+                            body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin:2rem;}
+                            a{display:block; margin:.5rem 0; font-size:1.1rem;}
+                          </style>
+                        </head>
+                        <body>
+                          <h1>HerbstSchulung API</h1>
+                          <ul>
+                            <li><a href="/swagger">Swagger UI</a></li>
+                            <li><a href="/health-ui">Health Checks UI</a></li>
+                          </ul>
+                        </body>
+                        </html>
+                        """;
+    return Results.Content(html, "text/html; charset=utf-8");
+}).ExcludeFromDescription(); // nicht in Swagger anzeigen
+
 
 app.Run();
 
