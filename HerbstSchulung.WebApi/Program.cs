@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using HerbstSchulung.WebApi.Filters;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,8 +58,17 @@ builder.Services.AddHttpLogging(logging =>
 
 // HealthChecks
 builder.Services.AddHealthChecks()
-    .AddCheck("self", () => HealthCheckResult.Healthy());
+    .AddCheck("Self", () => HealthCheckResult.Healthy())
+    .AddSqlServer(builder.Configuration.GetConnectionString("Default")!, name: "Database");
 
+// HealthChecks UI
+builder.Services
+    .AddHealthChecksUI(options =>
+    {
+        // UI polls this endpoint which aggregates "self" and "Database"
+        options.AddHealthCheckEndpoint("API Health", "/health");
+    })
+    .AddInMemoryStorage();
 
 // Jetzt die App bauen
 
@@ -81,7 +92,15 @@ app.UseHttpsRedirection();
 // Routing und Endpunkte
 app.MapControllers();
 
-// Health-Endpoint
-app.MapHealthChecks("/health");
+// HealthCheck Endpoint 
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    Predicate = _ => true,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
+// HealthChecks UI endpoint
+app.MapHealthChecksUI(options => options.UIPath = "/health-ui");
 
 app.Run();
+
