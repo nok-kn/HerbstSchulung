@@ -47,5 +47,10 @@
 		<!-- Empfehlung: mit Vorsicht geniessen, nur für standard Standard-Namespaces benutzen  -->
 		<ImplicitUsings>enable</ImplicitUsings>
 
+        <!-- Aktivieren des NuGet Pinning Mechanismus, um reproduzierbare Builds zu gewährleisten.
+             Empfehlung: immer true
+        -->
+        <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
+
     </PropertyGroup>
 </Project>
