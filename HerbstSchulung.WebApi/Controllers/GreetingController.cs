@@ -65,10 +65,16 @@ public class GreetingController(IGreeter greeter, IClock clock, ILogger<Greeting
     /// <summary>
     /// Beispiel-Endpunkt, der absichtlich einen Fehler erzeugt, um ProblemDetails zu zeigen.
     /// </summary>
-    [HttpGet("fail")]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    [HttpGet("server-error")]
     public IActionResult Fail()
     {
-        throw new InvalidOperationException("Absichtlich ausgelöster Fehler für Demo-Zwecke.");
+        throw new InvalidOperationException("Absichtlich ausgelöster Fehler für Demo");
     }
+
+    [HttpGet("not-found-error")]
+    public IActionResult GetNotFound()
+    {
+        throw new KeyNotFoundException("Der angeforderte Ressource wurde nicht gefunden.");
+    }
+
 }

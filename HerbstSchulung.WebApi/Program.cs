@@ -14,6 +14,7 @@ builder.Services
     {
         // Globale Filter hinzufügen (z. B. für Header/Logging etc.)
         options.Filters.Add(new ServiceFilterAttribute(typeof(TimingActionFilter)));
+        options.Filters.Add(new ServiceFilterAttribute(typeof(ExceptionMappingFilter)));
     })
     .AddJsonOptions(o =>
     {
@@ -26,6 +27,7 @@ builder.Services
 
 // Filter als Service registrieren
 builder.Services.AddScoped<TimingActionFilter>();
+builder.Services.AddScoped<ExceptionMappingFilter>();
 
 // Abstraktionen/Services aus eigener Bibliothek registrieren
 builder.Services.AddMyBuisnessLogicServices(builder.Configuration);
