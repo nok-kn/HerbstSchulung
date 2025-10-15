@@ -1,6 +1,12 @@
-@HerbstSchulung.WebApi_HostAddress = http://localhost:5168
-
-GET {{HerbstSchulung.WebApi_HostAddress}}/weatherforecast/
-Accept: application/json
+@Name=Test Name
 
 ###
+GET {{Host}}/api/greeting/say-hello-async?name={{Name}}
+
+###
+GET {{Host}}/api/greeting/not-found-error
+
+
+
+
+
