@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddControllers(options =>
     {
-        // Globale Filter hinzufÃ¼gen (z. B. fÃ¼r Header/Logging etc.)
+        // Globale Filter hinzufügen (z. B. für Header/Logging etc.)
         options.Filters.Add(new ServiceFilterAttribute(typeof(TimingActionFilter)));
         options.Filters.Add(new ServiceFilterAttribute(typeof(ExceptionMappingFilter)));
     })
@@ -45,10 +45,10 @@ builder.Services.AddSwaggerGen(c =>
     }
 });
 
-// ProblemDetails gemÃ¤ÃŸ RFC7807
+// ProblemDetails gemäß RFC7807
 builder.Services.AddProblemDetails();
 
-// HTTP-Request-Logging (Header, Body-GrÃ¶ÃŸen etc.)
+// HTTP-Request-Logging (Header, Body-Größen etc.)
 builder.Services.AddHttpLogging(logging =>
 {
     logging.LoggingFields = HttpLoggingFields.RequestPropertiesAndHeaders | HttpLoggingFields.ResponsePropertiesAndHeaders;
