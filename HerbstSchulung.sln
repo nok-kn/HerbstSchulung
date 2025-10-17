@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HerbstSchulung.WebApi", "He
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HerbstSchulung.RestClients", "HerbstSchulung.RestClients\HerbstSchulung.RestClients.csproj", "{DF3D9B44-3EB0-471C-8F41-52B7236F9375}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HerbstSchulung.EntityFramework", "HerbstSchulung.EntityFramework\HerbstSchulung.EntityFramework.csproj", "{345FC3CF-0B4F-4097-B085-F2A074FD2A11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -197,6 +199,18 @@ Global
 		{DF3D9B44-3EB0-471C-8F41-52B7236F9375}.Release|x64.Build.0 = Release|Any CPU
 		{DF3D9B44-3EB0-471C-8F41-52B7236F9375}.Release|x86.ActiveCfg = Release|Any CPU
 		{DF3D9B44-3EB0-471C-8F41-52B7236F9375}.Release|x86.Build.0 = Release|Any CPU
+		{345FC3CF-0B4F-4097-B085-F2A074FD2A11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{345FC3CF-0B4F-4097-B085-F2A074FD2A11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{345FC3CF-0B4F-4097-B085-F2A074FD2A11}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{345FC3CF-0B4F-4097-B085-F2A074FD2A11}.Debug|x64.Build.0 = Debug|Any CPU
+		{345FC3CF-0B4F-4097-B085-F2A074FD2A11}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{345FC3CF-0B4F-4097-B085-F2A074FD2A11}.Debug|x86.Build.0 = Debug|Any CPU
+		{345FC3CF-0B4F-4097-B085-F2A074FD2A11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{345FC3CF-0B4F-4097-B085-F2A074FD2A11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{345FC3CF-0B4F-4097-B085-F2A074FD2A11}.Release|x64.ActiveCfg = Release|Any CPU
+		{345FC3CF-0B4F-4097-B085-F2A074FD2A11}.Release|x64.Build.0 = Release|Any CPU
+		{345FC3CF-0B4F-4097-B085-F2A074FD2A11}.Release|x86.ActiveCfg = Release|Any CPU
+		{345FC3CF-0B4F-4097-B085-F2A074FD2A11}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

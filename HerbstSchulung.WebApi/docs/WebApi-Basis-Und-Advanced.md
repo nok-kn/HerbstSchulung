@@ -1,27 +1,21 @@
-# WebAPI – Basis und Advanced
+# WebAPI 
 
-Dieser Leitfaden erklärt die Grundlagen und fortgeschrittene Themen beim Bau einer ASP.NET Core WebAPI (net8.0) im Projekt HerbstSchulung.WebApi.
-
-## Basis
+## Themenübersicht
 
 - Kestrel als Webserver: Standard in ASP.NET Core, plattformunabhängig und performant.
-- Controller-basierte API: [ApiController]-Attribut für automatische Validierung und konsistente Fehler.
-- DI (Dependency Injection): Services aus HerbstSchulung.Hosting.Abstractions/Services werden über ServiceCollectionExtensions.AddMyBuisnessLogicServices registriert.
+- Controller-basierte API: [ApiController]-Attribut 
 - Swagger/OpenAPI: Automatische API-Dokumentation, UI im Development aktiviert.
 - ProblemDetails (RFC7807): Einheitliche Fehlerantworten via AddProblemDetails und UseExceptionHandler.
 - Logging: HTTP-Request-Logging via AddHttpLogging/UseHttpLogging und strukturierte Logs über ILogger.
 - Health Checks: /health Endpoint für Liveness/Readiness.
-- Filter: Globaler TimingActionFilter misst Laufzeiten von Aktionen.
-
-## Advanced
-
-- XML-Dokumentationskommentare werden in Swagger eingebunden (GenerateDocumentationFile).
-- Globale ProducesResponseType-Filter für einheitliche API-Kontrakte.
-- Exception-Mapping: KeyNotFoundException -> 404 NotFound.
-- JSON-Optionen: camelCase, indented in Development.
-- Middleware-Pipeline: UseExceptionHandler, UseStatusCodePages, UseHttpLogging, UseHttpsRedirection.
-- Containerisierung: Multi-Stage Dockerfile, kleines Runtime-Image (aspnet:8.0), Port 8080.
+- Health Checks UI: /health-ui Endpoint für Healhth UI.
 - HealthChecks erweiterbar mit Datenbank-, Cache- oder externen Endpoint-Checks.
+- Filter: Globaler TimingActionFilter misst Laufzeiten von Aktionen.
+- XML-Dokumentationskommentare werden in Swagger eingebunden (GenerateDocumentationFile).
+- Exception-Mapping: z.B KeyNotFoundException -> 404 NotFound im Filter
+- JSON mit System.Text.Json
+- Middleware-Pipeline: UseExceptionHandler, UseStatusCodePages, UseHttpLogging, UseHttpsRedirection.
+- Containerisierung: Multi-Stage Dockerfile, kleines Runtime-Image (aspnet:8.0)
 - Versionierung (optional): AddApiVersioning könnte ergänzt werden.
 - Rate Limiting (optional): AddRateLimiter für Schutz vor Missbrauch.
 - CORS (optional): AddCors für Browser-Clients.
