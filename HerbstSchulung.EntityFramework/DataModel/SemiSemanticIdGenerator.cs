@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 namespace HerbstSchulung.EntityFramework.DataModel;
 
 /// <summary>
-/// Generator für "semi-semantische" IDs. Wärschentlichkeit einer Kollision ≈ 8.27e−25
+/// Generator für "semi-semantische" IDs. Wärschentlichkeit einer Kollision (randomLength = 8) ≈  9.09e−13
 /// </summary>
 public static class SemiSemanticIdGenerator
 {
@@ -16,12 +16,12 @@ public static class SemiSemanticIdGenerator
         { typeof(Teacher),         "TCR" }
     };
 
-    public static string GenerateFor(object entity, int randomLength = 16) => GenerateFor(entity.GetType(), randomLength);
+    public static string GenerateFor(object entity, int randomLength = 8) => GenerateFor(entity.GetType(), randomLength);
     
-    public static string GenerateFor(Type entityType, int randomLength = 16)
+    public static string GenerateFor(Type entityType, int randomLength = 8)
     {
         ArgumentNullException.ThrowIfNull(entityType);
-        ArgumentOutOfRangeException.ThrowIfLessThan(randomLength, 10);
+        ArgumentOutOfRangeException.ThrowIfLessThan(randomLength, 6);
         
         var prefix = ResolvePrefix(entityType);
         var rnd = CreateRandomString(randomLength);
