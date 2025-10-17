@@ -13,7 +13,8 @@ public static class SemiSemanticIdGenerator
         { typeof(Auto),            "AUT" },
         { typeof(Lastkraftwagen),  "LKW" },
         { typeof(Student),         "STD" },
-        { typeof(Teacher),         "TCR" }
+        { typeof(Teacher),         "TCR" },
+        { typeof(Land),            "LND" }
     };
 
     public static string GenerateFor(object entity, int randomLength = 8) => GenerateFor(entity.GetType(), randomLength);
@@ -53,4 +54,3 @@ public static class SemiSemanticIdGenerator
         return new string(chars);
     }
 }
-
