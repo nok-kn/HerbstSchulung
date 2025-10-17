@@ -4,11 +4,10 @@ namespace HerbstSchulung.EntityFramework.DataModel;
 
 /// <summary>
 /// Basisklasse für alle Entities mit string-Id.
-/// Hinweis: string-Ids eignen sich z. B. für ULIDs, GUIDs als String oder eigene Schlüssel.
 /// </summary>
 public abstract class EntityBase
 {
-    public EntityBase()
+    protected EntityBase()
     {
         Id = Guid.NewGuid().ToString("N"); // Beispielhafte Initialisierung mit GUID als lesbarer String
     }
@@ -18,9 +17,10 @@ public abstract class EntityBase
     /// wird hier aber zur Klarheit explizit dekoriert.
     /// </summary>
     [Key]
-    [MaxLength(64)] // Beispielhafte Längenbegrenzung für lesbare Schlüssel (z. B. ULID)
+    [MaxLength(64)] // Längenbegrenzung in DB
+    // [StringLength(64)] geht auch, aber MaxLength ist üblicher für DB-Spalten
     [Required]
-    public string Id { get; set; } 
+    public required string Id { get; set; } 
 
     /// <summary>
     /// Optionale technische Erstellungszeit.

@@ -12,44 +12,33 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<Deskriptor> Deskriptoren => Set<Deskriptor>();
-    public DbSet<Rechnung> Rechnungen => Set<Rechnung>();
-
+    public DbSet<Student> Students => Set<Student>();
+    public DbSet<Teacher> Teachers => Set<Teacher>();
+    public DbSet<Auto> Autos => Set<Auto>();
+    public DbSet<Lastkraftwagen> Lastkraftwagen => Set<Lastkraftwagen>();
+    
     /// <summary>
-    /// Modellkonfiguration. Hier legen wir u. a. die Vererbungstrategie fest und konfigurieren Tabellennamen.
+    /// Modellkonfiguration. Hier legen wir u. a. die Vererbungstrategie und Relationen fest.
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Generelle Konvention: Pluralisierte Tabellennamen
-        modelBuilder.Entity<Deskriptor>().ToTable("Deskriptoren");
-
-        // Vererbung für Dokumente: TPH (Table-per-Hierarchy)
-        // Eine Tabelle "Dokumente" für die gesamte Hierarchie; konkrete Typen werden per Discriminator unterschieden
-        modelBuilder.Entity<DokumentBase>()
+        // TPH
+        modelBuilder.Entity<Person>()
             .UseTphMappingStrategy() // TPH-Strategie
-            .ToTable("Dokumente")
-            .HasDiscriminator<string>("DokumentTyp")
-            .HasValue<Rechnung>("Rechnung");
+            .ToTable("Persons")
+            .HasDiscriminator(p => p.Art)
+            .HasValue<Student>(PersonArt.Student)
+            .HasValue<Teacher>(PersonArt.Teacher);
 
-        // Beziehungen: 1:n Dokument -> Deskriptor
-        modelBuilder.Entity<DokumentBase>()
-            .HasMany(d => d.Deskriptoren)
-            .WithOne() // kein Backref-Eigentümer in diesem einfachen Beispiel
-            .OnDelete(DeleteBehavior.Cascade);
+        // TPT
+        modelBuilder.Entity<Fahrzeug>().UseTptMappingStrategy();
+        modelBuilder.Entity<Fahrzeug>().ToTable("Fahrzeuge");
+        modelBuilder.Entity<Auto>().ToTable("Autos");
+        modelBuilder.Entity<Lastkraftwagen>().ToTable("Lastkraftwagen");
 
-        // Indizes und Constraints als Beispiele
-        modelBuilder.Entity<EntityBase>()
-            .HasIndex(e => e.Id)
-            .IsUnique();
 
-        modelBuilder.Entity<Deskriptor>()
-            .HasIndex(d => new { d.Name, d.Value });
 
-        // Property-Konfigurationen für Value Objects
-        modelBuilder.Entity<DokumentBase>()
-            .Property(d => d.Datum)
-            .HasColumnType("date"); // Map DateOnly auf SQL-Typ date
     }
 }

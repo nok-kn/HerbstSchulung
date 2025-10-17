@@ -13,7 +13,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         
-        optionsBuilder.UseSqlServer("Server=(localdb)\\.;Database=HerbstSchulung;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True");
+        optionsBuilder.UseSqlServer("Server=localhost;Database=HerbstSchulung;Integrated Security=True;MultipleActiveResultSets=True;ConnectRetryCount=3;TrustServerCertificate=True");
 
         return new AppDbContext(optionsBuilder.Options);
     }

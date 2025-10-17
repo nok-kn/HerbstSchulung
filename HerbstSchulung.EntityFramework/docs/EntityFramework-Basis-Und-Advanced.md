@@ -1,17 +1,10 @@
-# Entity Framework Core – Basis & Advanced (Workshop)
+# Entity Framework Core – Basis & Advanced
 
-> Alle Erklärungen in diesem Dokument sind bewusst knapp und praxisorientiert. Die Beispiele beziehen sich auf .NET 8 und EF Core 8.
-
-## Ziele
-- EF Core verstehen (Architektur, Patterns, Provider)
-- Code First, Migrations, Inheritance Strategien
-- Beziehungen, Indizes, Concurrency, Transaktionen
-- Best Practices und häufige Fallstricke
 
 ## Grundbegriffe
 - DbContext: Unit of Work + Change Tracker
 - DbSet<TEntity>: Tabelle/Collection einer Entity
-- Entity: Zustandsbehaftetes Domain-Objekt mit Identität
+- Entity: Domain-Objekt mit Identität, das persistiert wird
 - Value Object: Werttyp ohne Identität (z. B. DateOnly, Money)
 
 ## Projektstruktur (Workshop)
@@ -22,11 +15,44 @@
 
 ## Code First und Inheritance
 - Code First: Modell wird aus C#-Klassen abgeleitet
-- Inheritance-Strategien:
-  - TPH (Table per Hierarchy): Eine Tabelle, Discriminator-Spalte; schnell, wenig Joins
-  - TPT (Table per Type): Eine Tabelle pro Typ; sauber, aber mehr Joins
-  - TPC (Table per Concrete Type): Keine gemeinsame Tabelle; Duplikate möglich, Mapping aufwendig
-- Empfehlung: Start mit TPH; bei klaren Gründen TPT/TPC
+
+| Strategie                         | Beschreibung                                                                              | Vorteile                                                                                                 | Nachteile                                                                                                                       |
+| --------------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **TPH** (Table-per-Hierarchy)     | Eine Tabelle für die gesamte Vererbungshierarchie. Discriminator-Spalte bestimmt den Typ. Default.  | - Beste Performance bei einfachen Abfragen<br>- Geringerer Speicherbedarf<br>- Einfach zu implementieren | - Viele NULL-Werte bei nicht geteilten Properties<br>- Schwer wartbar bei großen Hierarchien                                    |
+| **TPT** (Table-per-Type)          | Eine Tabelle pro Klasse. Vererbung wird durch Joins zwischen Tabellen abgebildet.         | - Gute Normalisierung<br>- Keine NULL-Spalten<br>- Klarere Datenstruktur                                 | - Performance schlechter durch JOINs<br>- Komplexere Abfragen<br>- Schlechtere Skalierbarkeit                                   |
+| **TPC** (Table-per-Concrete-Type) | Jede konkrete Klasse hat ihre eigene Tabelle mit allen Feldern (auch von Basisklasse).    | - Beste Performance bei reinen konkreten Typen<br>- Keine NULL-Werte<br>- Kein Join nötig                | - Datenredundanz (gleiche Felder in mehreren Tabellen)<br>-                                                                     |
+
+- Empfehlungen:
+  - Lange Kette von Vererbungen vermeiden
+  - Beachte, dass Strategien nicht gemischt werden können
+  - Eine abstrakte Basisklasse (Id, CreatedAt, etc.) für alle Entities ist sinnvoll
+  - Benutze folgenden Entscheidungsbaum zur Auswahl der Strategie: 
+
+
+Start
+│
+└── Gibt es sehr hohe Anforderungen an Abfrage Performance?
+      │
+      ├── Ja
+      │     └── Ist Datenredundanz akzeptabel?
+      │           ├── Ja   => Verwende **TPC**
+      │           └── Nein => Verwende **TPH**
+      │
+      └── Nein
+            └── Hast du viele gemeinsame Properties in der Basisklasse?
+                  │
+                  ├── Ja
+                  │     └── Möchtest du NULL-Werte vermeiden?
+                  │           ├── Ja   => Verwende **TPT**
+                  │           └── Nein => Verwende **TPH**
+                  │
+                  └── Nein
+                        └── Sind die Typen stark unterschiedlich?
+                              ├── Ja   => Verwende **TPC**
+                              └── Nein => Verwende **TPH**
+
+
+
 
 ## Konfiguration im Beispiel
 - TPH für DokumentBase -> Rechnung mit Discriminator "DokumentTyp"
@@ -48,9 +74,9 @@ modelBuilder.Entity<DokumentBase>()
 ```
 
 ## Migrations
-- Erzeugung: `dotnet ef migrations add InitialCreate -p HerbstSchulung.EntityFramework -s HerbstSchulung.WebApi`
-- Aktualisieren: `dotnet ef database update -p HerbstSchulung.EntityFramework -s HerbstSchulung.WebApi`
-- Entfernen: `dotnet ef migrations remove -p HerbstSchulung.EntityFramework -s HerbstSchulung.WebApi`
+- Erzeugung: `dotnet ef migrations add InitialCreate -p HerbstSchulung.EntityFramework`
+- Aktualisieren: `dotnet ef database update -p HerbstSchulung.EntityFramework`
+- Entfernen: `dotnet ef migrations remove -p HerbstSchulung.EntityFramework`
 
 Hinweise:
 - -p = Projekt mit DbContext, -s = Startprojekt (liefert Provider/Config)
@@ -62,7 +88,6 @@ Hinweise:
 - Transaktionen bewusst einsetzen (`BeginTransactionAsync`)
 - AsNoTracking für reine Lesezugriffe
 - Owned Types für Value Objects
-- Batch-Operationen vermeiden oder Tools wie EFCore.BulkExtensions nutzen
 
 ## Häufige Fallstricke
 - N+1-Queries: `Include`/`ThenInclude` oder explizite Lade-Strategien verwenden
