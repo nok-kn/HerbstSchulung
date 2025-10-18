@@ -6,7 +6,7 @@ using Xunit;
 
 namespace HerbstSchulung.EntityFramework.Tests
 {
-    // nach jedem Test wird die schnell DB zurückgesetzt mit dem DbFixture
+    // nach jedem Test wird die schnell DB zurückgesetzt (mit dem DbFixture)
     
     [Collection("db")]
     public class IsolierteDbTests :  IAsyncLifetime
@@ -48,7 +48,7 @@ namespace HerbstSchulung.EntityFramework.Tests
         public async Task AppDbContext_Can_Add_And_Retrieve_Teacher()
         {
             // Arrange
-            using var sut = Arrange.CreateInMemoryDbContext();
+            using var sut = Arrange.CreateDbContext(false);
             var teacher = new Teacher
             {
                 Id = "TCH-001",
