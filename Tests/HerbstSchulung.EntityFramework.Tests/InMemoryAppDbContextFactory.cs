@@ -40,12 +40,13 @@ public class InMemoryAppDbContextFactory : IAppDbContextFactory
 
     /// <summary>
     /// Erstellt einen Read-Only AppDbContext mit deaktiviertem Entity Tracking.
+    /// Wirft eine Exception bei Versuchen, Änderungen zu speichern.
     /// </summary>
-    /// <returns>Eine neue AppDbContext-Instanz mit QueryTrackingBehavior.NoTracking.</returns>
+    /// <returns>Eine neue AppDbContext-Instanz mit QueryTrackingBehavior.NoTracking und IsReadOnly = true.</returns>
     public AppDbContext CreateReadOnlyContext()
     {
         var options = BuildOptions(enableTracking: false);
-        return new AppDbContext(options);
+        return new AppDbContext(options) { IsReadOnly = true };
     }
 
     /// <summary>

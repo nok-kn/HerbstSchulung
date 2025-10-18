@@ -190,8 +190,8 @@ public class AppDbContextTests
         var actualPersonCount = sut.Students.Count() + sut.Teachers.Count();
         var actualVehicleCount = sut.Set<Fahrzeug>().Count();
 
-        actualPersonCount.Should().Be(initialPersonCount, "EnsureSeeded should not duplicate data");
-        actualVehicleCount.Should().Be(initialVehicleCount, "EnsureSeeded should not duplicate data");
+        actualPersonCount.Should().Be(initialPersonCount, "EnsureSeeded sollte keine Duplikate erstellen");
+        actualVehicleCount.Should().Be(initialVehicleCount, "EnsureSeeded sollte keine Duplikate erstellen");
     }
 
     [Fact]
@@ -241,7 +241,7 @@ public class AppDbContextTests
         var actual = context2.Students.FirstOrDefault(s => s.Id == student.Id);
 
         // Assert
-        actual.Should().BeNull("Each context should have its own isolated database");
+        actual.Should().BeNull("Jeder Kontext sollte eine eigene isolierte Datenbank haben");
     }
 
     [Fact]
@@ -270,7 +270,7 @@ public class AppDbContextTests
             var actual = context2.Students.FirstOrDefault(s => s.Id == student.Id);
             
             // Assert
-            actual.Should().NotBeNull("Shared factory should allow data access across contexts");
+            actual.Should().NotBeNull("Geteilte Factory sollte den Datenzugriff zwischen Kontexten ermöglichen");
             actual!.Name.Should().Be(student.Name);
         }
     }
@@ -297,11 +297,360 @@ public class AppDbContextTests
         using var readContext = sut.CreateReadOnlyContext();
         var actual = readContext.Students.First(s => s.Id == student.Id);
         actual.Name = "Modified";
-        readContext.SaveChanges();
+        var act = () => readContext.SaveChanges();
 
-        // Assert - Verify NoTracking by checking if change was persisted
-        using var verifyContext = sut.CreateContext();
-        var verifiedStudent = verifyContext.Students.First(s => s.Id == student.Id);
-        verifiedStudent.Name.Should().Be(student.Name, "ReadOnly context should use NoTracking and not persist changes");
+        // Assert - Überprüfen, dass SaveChanges eine Ausnahme auslöst
+        act.Should().Throw<InvalidOperationException>()
+            .WithMessage("*read-only*");
+    }
+
+    [Fact]
+    public async Task Factory_CreateReadOnlyContext_SaveChangesAsync_Throws_Exception()
+    {
+        // Arrange
+        var sut = InMemoryAppDbContextFactory.CreateShared();
+        var student = new Student 
+        { 
+            Id = "STU-READONLY-002", 
+            Name = "Original", 
+            School = "School", 
+            Nationality = "DE" 
+        };
+        
+        using var writeContext = sut.CreateContext();
+        await writeContext.Database.EnsureCreatedAsync();
+        writeContext.Students.Add(student);
+        await writeContext.SaveChangesAsync();
+
+        // Act
+        using var readContext = sut.CreateReadOnlyContext();
+        var actual = await readContext.Students.FirstAsync(s => s.Id == student.Id);
+        actual.Name = "Modified";
+        var act = async () => await readContext.SaveChangesAsync();
+
+        // Assert
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*read-only*");
+    }
+
+    [Fact]
+    public async Task AddIfNotExistsAsync_Adds_New_Entity()
+    {
+        // Arrange
+        using var sut = CreateInMemoryDbContext();
+        var student = new Student
+        {
+            Id = "STU-NOTEXISTS-001",
+            Name = "New Student",
+            School = "Test School",
+            Nationality = "DE"
+        };
+
+        // Act
+        var actual = await sut.AddIfNotExistsAsync(student);
+        await sut.SaveChangesAsync();
+
+        // Assert
+        actual.Should().BeTrue("Entity sollte hinzugefügt werden, wenn sie noch nicht existiert");
+        var saved = await sut.Students.FirstOrDefaultAsync(s => s.Id == student.Id);
+        saved.Should().NotBeNull();
+        saved!.Name.Should().Be(student.Name);
+    }
+
+    [Fact]
+    public async Task AddIfNotExistsAsync_Returns_False_For_Existing_Entity()
+    {
+        // Arrange
+        using var sut = CreateInMemoryDbContext();
+        var student = new Student
+        {
+            Id = "STU-EXISTS-001",
+            Name = "Existing Student",
+            School = "Test School",
+            Nationality = "DE"
+        };
+
+        // Entity zuerst hinzufügen
+        sut.Students.Add(student);
+        await sut.SaveChangesAsync();
+
+        // Act
+        var newStudent = new Student
+        {
+            Id = student.Id,
+            Name = "Different Name",
+            School = "Different School",
+            Nationality = "AT"
+        };
+        var actual = await sut.AddIfNotExistsAsync(newStudent);
+        await sut.SaveChangesAsync();
+
+        // Assert
+        actual.Should().BeFalse("Entity sollte nicht hinzugefügt werden, wenn sie bereits existiert");
+        var saved = await sut.Students.FirstOrDefaultAsync(s => s.Id == student.Id);
+        saved!.Name.Should().Be("Existing Student", "Ursprüngliche Entity sollte unverändert bleiben");
+    }
+
+    [Fact]
+    public async Task AddIfNotExistsAsync_Works_With_Different_Entity_Types()
+    {
+        // Arrange
+        using var sut = CreateInMemoryDbContext();
+        var auto = new Auto
+        {
+            Id = "AUT-NOTEXISTS-001",
+            Hersteller = "Tesla",
+            Modell = "Model 3",
+            Baujahr = 2023,
+            AnzahlTueren = 4,
+            HatHybridantrieb = false
+        };
+
+        // Act
+        var actual = await sut.AddIfNotExistsAsync(auto);
+        await sut.SaveChangesAsync();
+
+        // Assert
+        actual.Should().BeTrue("Auto sollte hinzugefügt werden, wenn es noch nicht existiert");
+        var saved = await sut.Autos.FirstOrDefaultAsync(a => a.Id == auto.Id);
+        saved.Should().NotBeNull();
+        saved!.Hersteller.Should().Be(auto.Hersteller);
+    }
+
+    [Fact]
+    public async Task AddIfNotExistsAsync_Throws_ArgumentNullException_For_Null_Entity()
+    {
+        // Arrange
+        using var sut = CreateInMemoryDbContext();
+
+        // Act
+        var act = async () => await sut.AddIfNotExistsAsync<Student>(null!);
+
+        // Assert
+        await act.Should().ThrowAsync<ArgumentNullException>()
+            .WithParameterName("entity");
+    }
+
+    [Fact]
+    public async Task MergeAsync_Adds_New_Entity()
+    {
+        // Arrange
+        using var sut = CreateInMemoryDbContext();
+        var student = new Student
+        {
+            Id = "STU-MERGE-NEW-001",
+            Name = "New Student",
+            School = "Test School",
+            Nationality = "DE"
+        };
+
+        // Act
+        var actual = await sut.MergeAsync(student);
+        await sut.SaveChangesAsync();
+
+        // Assert
+        actual.Should().BeTrue("Neue Entity sollte hinzugefügt werden");
+        var saved = await sut.Students.FirstOrDefaultAsync(s => s.Id == student.Id);
+        saved.Should().NotBeNull();
+        saved!.Name.Should().Be(student.Name);
+    }
+
+    [Fact]
+    public async Task MergeAsync_Updates_Tracked_Entity()
+    {
+        // Arrange
+        using var sut = CreateInMemoryDbContext();
+        var student = new Student
+        {
+            Id = "STU-TRACKED-001",
+            Name = "Original Name",
+            School = "Original School",
+            Nationality = "DE"
+        };
+
+        // Entity hinzufügen und im Context tracken
+        sut.Students.Add(student);
+        await sut.SaveChangesAsync();
+
+        // Act - Versuche dieselbe Entity mit geänderten Daten zu mergen
+        var updatedStudent = new Student
+        {
+            Id = student.Id,
+            Name = "Updated Name",
+            School = "Updated School",
+            Nationality = "AT"
+        };
+        var actual = await sut.MergeAsync(updatedStudent);
+
+        // Assert
+        actual.Should().BeFalse("Entity ist bereits getrackt und sollte aktualisiert werden");
+        
+        // Prüfe, dass die getrackten Werte aktualisiert wurden
+        student.Name.Should().Be("Updated Name");
+        student.School.Should().Be("Updated School");
+        student.Nationality.Should().Be("AT");
+    }
+
+    [Fact]
+    public async Task MergeAsync_Updates_Existing_Entity_In_Database()
+    {
+        // Arrange
+        using var sut = CreateInMemoryDbContext();
+        var student = new Student
+        {
+            Id = "STU-DBEXISTS-001",
+            Name = "Original Name",
+            School = "Original School",
+            Nationality = "DE"
+        };
+
+        // Entity in DB speichern
+        sut.Students.Add(student);
+        await sut.SaveChangesAsync();
+        
+        // Context leeren, damit Entity nicht mehr getrackt wird
+        sut.ChangeTracker.Clear();
+
+        // Act - Versuche dieselbe Entity mit geänderten Daten zu mergen
+        var updatedStudent = new Student
+        {
+            Id = student.Id,
+            Name = "Updated Name",
+            School = "Updated School",
+            Nationality = "AT"
+        };
+        var actual = await sut.MergeAsync(updatedStudent);
+        await sut.SaveChangesAsync();
+
+        // Assert
+        actual.Should().BeFalse("Entity existiert bereits in DB und sollte aktualisiert werden");
+        
+        // Prüfe, dass die Werte in der DB aktualisiert wurden
+        var saved = await sut.Students.FirstOrDefaultAsync(s => s.Id == student.Id);
+        saved.Should().NotBeNull();
+        saved!.Name.Should().Be("Updated Name");
+        saved.School.Should().Be("Updated School");
+        saved.Nationality.Should().Be("AT");
+    }
+
+    [Fact]
+    public async Task MergeAsync_Multiple_Entities()
+    {
+        // Arrange
+        using var sut = CreateInMemoryDbContext();
+        
+        var student1 = new Student
+        {
+            Id = "STU-MERGE-001",
+            Name = "Student 1",
+            School = "School A",
+            Nationality = "DE"
+        };
+
+        var student2 = new Student
+        {
+            Id = "STU-MERGE-002",
+            Name = "Student 2",
+            School = "School B",
+            Nationality = "AT"
+        };
+
+        // Act - Erstes Hinzufügen
+        var added1 = await sut.MergeAsync(student1);
+        var added2 = await sut.MergeAsync(student2);
+        await sut.SaveChangesAsync();
+
+        // Aktualisierte Versionen
+        var updated1 = new Student
+        {
+            Id = "STU-MERGE-001",
+            Name = "Updated Student 1",
+            School = "Updated School A",
+            Nationality = "CH"
+        };
+
+        var updated2 = new Student
+        {
+            Id = "STU-MERGE-002",
+            Name = "Updated Student 2",
+            School = "Updated School B",
+            Nationality = "DE"
+        };
+
+        var merged1 = await sut.MergeAsync(updated1);
+        var merged2 = await sut.MergeAsync(updated2);
+        await sut.SaveChangesAsync();
+
+        // Assert
+        added1.Should().BeTrue("Erste Entity sollte hinzugefügt werden");
+        added2.Should().BeTrue("Zweite Entity sollte hinzugefügt werden");
+        merged1.Should().BeFalse("Erste Entity sollte aktualisiert werden");
+        merged2.Should().BeFalse("Zweite Entity sollte aktualisiert werden");
+
+        var allStudents = await sut.Students.ToListAsync();
+        allStudents.Should().HaveCount(2, "Es sollten nur 2 Entities existieren");
+        
+        allStudents.Should().Contain(s => s.Id == "STU-MERGE-001" && s.Name == "Updated Student 1");
+        allStudents.Should().Contain(s => s.Id == "STU-MERGE-002" && s.Name == "Updated Student 2");
+    }
+
+    [Fact]
+    public async Task MergeAsync_Works_With_Different_Entity_Types()
+    {
+        // Arrange
+        using var sut = CreateInMemoryDbContext();
+        var auto = new Auto
+        {
+            Id = "AUT-MERGE-001",
+            Hersteller = "VW",
+            Modell = "Golf",
+            Baujahr = 2020,
+            AnzahlTueren = 5,
+            HatHybridantrieb = false
+        };
+
+        // Act - Erstes Hinzufügen
+        var added = await sut.MergeAsync(auto);
+        await sut.SaveChangesAsync();
+
+        // Aktualisierte Version
+        var updatedAuto = new Auto
+        {
+            Id = auto.Id,
+            Hersteller = "Volkswagen",
+            Modell = "Golf GTI",
+            Baujahr = 2021,
+            AnzahlTueren = 3,
+            HatHybridantrieb = true
+        };
+
+        var merged = await sut.MergeAsync(updatedAuto);
+        await sut.SaveChangesAsync();
+
+        // Assert
+        added.Should().BeTrue("Auto sollte hinzugefügt werden");
+        merged.Should().BeFalse("Auto sollte aktualisiert werden");
+
+        var saved = await sut.Autos.FirstOrDefaultAsync(a => a.Id == auto.Id);
+        saved.Should().NotBeNull();
+        saved!.Hersteller.Should().Be("Volkswagen");
+        saved.Modell.Should().Be("Golf GTI");
+        saved.Baujahr.Should().Be(2021);
+        saved.AnzahlTueren.Should().Be(3);
+        saved.HatHybridantrieb.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task MergeAsync_Throws_ArgumentNullException_For_Null_Entity()
+    {
+        // Arrange
+        using var sut = CreateInMemoryDbContext();
+
+        // Act
+        var act = async () => await sut.MergeAsync<Student>(null!);
+
+        // Assert
+        await act.Should().ThrowAsync<ArgumentNullException>()
+            .WithParameterName("entity");
     }
 }

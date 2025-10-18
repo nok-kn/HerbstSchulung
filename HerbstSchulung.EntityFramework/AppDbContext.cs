@@ -8,6 +8,7 @@ namespace HerbstSchulung.EntityFramework;
 /// </summary>
 public class AppDbContext : DbContext
 {
+ 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
@@ -17,7 +18,9 @@ public class AppDbContext : DbContext
     public DbSet<Auto> Autos => Set<Auto>();
     public DbSet<Lastkraftwagen> Lastkraftwagen => Set<Lastkraftwagen>();
     public DbSet<Land> Laender => Set<Land>();
-    
+
+    public bool IsReadOnly { get; init; }
+
     /// <summary>
     /// Modellkonfiguration. Hier legen wir u. a. die Vererbungstrategie und Relationen fest.
     /// </summary>
@@ -53,4 +56,38 @@ public class AppDbContext : DbContext
             new { Id = "LND-CH000001", Name = "Schweiz", IsoCode = "CH", CreatedUtc = seedCreated }
         );
     }
+
+    public override int SaveChanges()
+    {
+        ThrowIfReadOnly();
+        return base.SaveChanges();
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        ThrowIfReadOnly();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        ThrowIfReadOnly();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    {
+        ThrowIfReadOnly();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    private void ThrowIfReadOnly()
+    {
+        if (IsReadOnly)
+        {
+            throw new InvalidOperationException("This context is read-only. Save operations are not allowed.");
+        }
+    }
+
+
 }
