@@ -26,8 +26,7 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         // TPH
-        modelBuilder.Entity<Person>()
-            .UseTphMappingStrategy() // TPH-Strategie
+        modelBuilder.Entity<Person>().UseTphMappingStrategy() 
             .ToTable("Persons")
             .HasDiscriminator(p => p.Art)
             .HasValue<Student>(PersonArt.Student)
@@ -39,9 +38,14 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Auto>().ToTable("Autos");
         modelBuilder.Entity<Lastkraftwagen>().ToTable("Lastkraftwagen");
         modelBuilder.Entity<Land>().ToTable("Laender");
+        
+        // TPC
+        modelBuilder.Entity<Dokument>().UseTpcMappingStrategy(); 
+        modelBuilder.Entity<Rechnung>().ToTable("Rechnungen");
+        modelBuilder.Entity<Angebot>().ToTable("Angebote");
 
 
-        // Seed für statische Data 
+        // Seed für statischen Daten
         var seedCreated = new DateTime(2025, 01, 01, 0, 0, 0, DateTimeKind.Utc);
         modelBuilder.Entity<Land>().HasData(
             new { Id = "LND-DE000001", Name = "Deutschland", IsoCode = "DE", CreatedUtc = seedCreated },
