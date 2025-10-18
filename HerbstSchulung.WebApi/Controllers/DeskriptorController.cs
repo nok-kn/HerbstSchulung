@@ -24,7 +24,7 @@ public class DeskriptorController(IDeskriptorService service) : ControllerBase
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(DeskriptorDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<DeskriptorDto> GetByIdAsync(int id) =>
+    public async Task<DeskriptorDto?> GetByIdAsync(int id) =>
         await service.GetByIdAsync(id, HttpContext.RequestAborted);
 
     /// <summary>
