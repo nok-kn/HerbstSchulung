@@ -21,12 +21,15 @@ public abstract class Person : EntityBase
     public string? Nationality { get; set; }
 
     // Property, das auf die Discriminator-Spalte abbildet
-    public abstract PersonArt Art { get;  } 
+    public PersonArt Art { get; protected set; } 
 }
 
 public class Student : Person
 {
-    public override PersonArt Art => PersonArt.Student;
+    public Student()
+    {
+        Art = PersonArt.Student;
+    }
 
     [MaxLength(50)]
     [Required]
@@ -35,7 +38,10 @@ public class Student : Person
 
 public class Teacher : Person
 {
-    public override PersonArt Art => PersonArt.Teacher;
+    public Teacher()
+    {
+        Art = PersonArt.Teacher;
+    }
 
     [MaxLength(50)]
     [Required]
