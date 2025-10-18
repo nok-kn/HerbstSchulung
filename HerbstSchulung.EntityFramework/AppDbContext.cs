@@ -18,6 +18,8 @@ public class AppDbContext : DbContext
     public DbSet<Auto> Autos => Set<Auto>();
     public DbSet<Lastkraftwagen> Lastkraftwagen => Set<Lastkraftwagen>();
     public DbSet<Land> Laender => Set<Land>();
+    public DbSet<Rechnung> Rechnungen => Set<Rechnung>();
+    public DbSet<Angebot> Angebote => Set<Angebot>();
 
     public bool IsReadOnly { get; init; }
 
