@@ -34,7 +34,7 @@ Start
 └── Gibt es sehr hohe Anforderungen an Abfrage Performance?
       │
       ├── Ja
-      │     └── Ist Datenredundanz akzeptabel?
+      │     └── Sind DB Constraints wichtig (NOT NULL) ?
       │           ├── Ja   => Verwende **TPC**
       │           └── Nein => Verwende **TPH**
       │
@@ -51,14 +51,25 @@ Start
                               ├── Ja   => Verwende **TPC**
                               └── Nein => Verwende **TPH**
 
+Andere Aspekte:
+- Abfragemuster: Polymorphe Queries => TPH/TPT, Konkrete Queries => TPC
 
+// Schlechte Performance bei TPC
+var alleDokumente = await context.Set<Dokument>().ToListAsync();
+//  Erfordert UNION ALL über mehrere Tabellen
 
+// Beste Performance bei TPH
+var allePersonen = await context.Set<Person>().ToListAsync();
+//  Einfaches SELECT * FROM Persons
 
-## Konfiguration im Beispiel
-- TPH für DokumentBase -> Rechnung mit Discriminator "DokumentTyp"
-- Pluralisierte Tabellennamen: Dokumente, Rechnungen, Deskriptoren
-- DateOnly wird als SQL "date" gemappt
-- Indizes und Constraints per Fluent API
+// Moderate Performance bei TPT
+var alleFahrzeuge = await context.Set<Fahrzeug>().ToListAsync();
+//  JOINs über Fahrzeuge + Autos + Lastkraftwagen
+
+- Performance: Lesen: TPC > TPH > TPT,  Schreiben: TPH > TPC > TPT 
+- Wartbarkeit: TPT = beste Erweiterbarkeit, TPH = einfachste Struktur
+    
+
 
 ## Beziehungen
 - 1:n Dokument -> Deskriptor (Cascade Delete)
@@ -88,10 +99,11 @@ Hinweise:
 - Transaktionen bewusst einsetzen (`BeginTransactionAsync`)
 - AsNoTracking für reine Lesezugriffe
 - Owned Types für Value Objects
+- 
 
 ## Häufige Fallstricke
 - N+1-Queries: `Include`/`ThenInclude` oder explizite Lade-Strategien verwenden
-- Lazy Loading vorsichtig einsetzen (Performance/Seiteneffekte)
+- Lazy Loading vermeiden (Performance/Seiteneffekte)
 - Zu breite DbContext-Lebenszeit (Singleton vermeiden)
 - Falsche DeleteBehavior-Einstellungen (Restrict vs. Cascade)
 
