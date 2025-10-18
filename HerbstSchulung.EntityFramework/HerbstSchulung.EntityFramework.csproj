@@ -13,4 +13,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\20251018081328_AddDokumentEntities_Up.sql" />
+    <EmbeddedResource Include="Migrations\20251018081328_AddDokumentEntities_Down.sql" />
+  </ItemGroup>
+
 </Project>
