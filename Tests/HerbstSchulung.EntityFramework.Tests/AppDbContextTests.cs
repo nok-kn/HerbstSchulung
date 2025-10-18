@@ -6,26 +6,25 @@ using Xunit;
 
 namespace HerbstSchulung.EntityFramework.Tests;
 
+
 /// <summary>
 /// Beispiel-Tests für AppDbContext.
 /// </summary>
 public class AppDbContextTests
 {
-    /// <summary>
-    /// Hilfsmethode: Erstellt einen InMemory-DbContext pro Test (isoliert).
-    /// Verwendet die neue IAppDbContextFactory-Implementierung für Tests.
-    /// </summary>
-    private static AppDbContext CreateInMemoryDbContext()
-    {
-        var factory = new InMemoryAppDbContextFactory();
-        return factory.CreateContext();
-    }
-
     [Fact]
-    public async Task AppDbContext_Can_Add_And_Retrieve_Student()
+    public async Task InMemory_AppDbContext_Can_Add_And_Retrieve_Student()
+        => await AppDbContext_Can_Add_And_Retrieve_Student(true);
+    
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task SqlServer_AppDbContext_Can_Add_And_Retrieve_Student()
+        => await AppDbContext_Can_Add_And_Retrieve_Student(false);
+
+    private async Task AppDbContext_Can_Add_And_Retrieve_Student(bool inMemory)
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateDbContext(inMemory);
         var student = new Student
         {
             Id = "STU-001",
@@ -35,7 +34,7 @@ public class AppDbContextTests
         };
 
         // Act
-        sut.Students.Add(student);
+        await sut.MergeAsync(student);
         await sut.SaveChangesAsync();
 
         // Assert
@@ -51,7 +50,7 @@ public class AppDbContextTests
     public async Task AppDbContext_Can_Add_And_Retrieve_Teacher()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         var teacher = new Teacher
         {
             Id = "TCH-001",
@@ -61,7 +60,7 @@ public class AppDbContextTests
         };
 
         // Act
-        sut.Teachers.Add(teacher);
+        await sut.MergeAsync(teacher);
         await sut.SaveChangesAsync();
 
         // Assert
@@ -77,7 +76,7 @@ public class AppDbContextTests
     public async Task AppDbContext_Can_Add_And_Retrieve_Auto()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         var auto = new Auto
         {
             Id = "AUT-001",
@@ -89,7 +88,7 @@ public class AppDbContextTests
         };
 
         // Act
-        sut.Autos.Add(auto);
+        await sut.MergeAsync(auto);
         await sut.SaveChangesAsync();
 
         // Assert
@@ -106,7 +105,7 @@ public class AppDbContextTests
     public async Task AppDbContext_Can_Add_And_Retrieve_Lastkraftwagen()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         var lkw = new Lastkraftwagen
         {
             Id = "LKW-001",
@@ -118,7 +117,7 @@ public class AppDbContextTests
         };
 
         // Act
-        sut.Lastkraftwagen.Add(lkw);
+        await sut.MergeAsync(lkw);
         await sut.SaveChangesAsync();
 
         // Assert
@@ -135,7 +134,7 @@ public class AppDbContextTests
     public async Task AppDbContext_HasData_Seeds_Laender()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         
         // In-Memory DB muss EnsureCreated aufrufen, damit HasData funktioniert
         await sut.Database.EnsureCreatedAsync();
@@ -154,7 +153,7 @@ public class AppDbContextTests
     public void TestData_EnsureSeeded_Creates_Persons_And_Vehicles()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         sut.Database.EnsureCreated();
 
         // Act
@@ -176,7 +175,7 @@ public class AppDbContextTests
     public void TestData_EnsureSeeded_Does_Not_Duplicate_Data()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         sut.Database.EnsureCreated();
 
         // Act
@@ -198,7 +197,7 @@ public class AppDbContextTests
     public async Task EntityBase_Sets_CreatedUtc_Automatically()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         var beforeCreate = DateTime.UtcNow.AddSeconds(-1);
         
         var student = new Student
@@ -337,7 +336,7 @@ public class AppDbContextTests
     public async Task AddIfNotExistsAsync_Adds_New_Entity()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         var student = new Student
         {
             Id = "STU-NOTEXISTS-001",
@@ -361,7 +360,7 @@ public class AppDbContextTests
     public async Task AddIfNotExistsAsync_Returns_False_For_Existing_Entity()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         var student = new Student
         {
             Id = "STU-EXISTS-001",
@@ -395,7 +394,7 @@ public class AppDbContextTests
     public async Task AddIfNotExistsAsync_Works_With_Different_Entity_Types()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         var auto = new Auto
         {
             Id = "AUT-NOTEXISTS-001",
@@ -421,7 +420,7 @@ public class AppDbContextTests
     public async Task AddIfNotExistsAsync_Throws_ArgumentNullException_For_Null_Entity()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
 
         // Act
         var act = async () => await sut.AddIfNotExistsAsync<Student>(null!);
@@ -435,7 +434,7 @@ public class AppDbContextTests
     public async Task MergeAsync_Adds_New_Entity()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         var student = new Student
         {
             Id = "STU-MERGE-NEW-001",
@@ -459,7 +458,7 @@ public class AppDbContextTests
     public async Task MergeAsync_Updates_Tracked_Entity()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         var student = new Student
         {
             Id = "STU-TRACKED-001",
@@ -495,7 +494,7 @@ public class AppDbContextTests
     public async Task MergeAsync_Updates_Existing_Entity_In_Database()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         var student = new Student
         {
             Id = "STU-DBEXISTS-001",
@@ -537,7 +536,7 @@ public class AppDbContextTests
     public async Task MergeAsync_Multiple_Entities()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         
         var student1 = new Student
         {
@@ -598,7 +597,7 @@ public class AppDbContextTests
     public async Task MergeAsync_Works_With_Different_Entity_Types()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
         var auto = new Auto
         {
             Id = "AUT-MERGE-001",
@@ -644,7 +643,7 @@ public class AppDbContextTests
     public async Task MergeAsync_Throws_ArgumentNullException_For_Null_Entity()
     {
         // Arrange
-        using var sut = CreateInMemoryDbContext();
+        using var sut = Arrange.CreateInMemoryDbContext();
 
         // Act
         var act = async () => await sut.MergeAsync<Student>(null!);

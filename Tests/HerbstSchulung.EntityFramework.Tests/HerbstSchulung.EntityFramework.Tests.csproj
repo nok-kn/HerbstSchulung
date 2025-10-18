@@ -7,7 +7,9 @@
 
 	<ItemGroup>
 		<!-- Test-Laufzeit und -Runner -->
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+		<PackageReference Include="Respawn" Version="6.2.1" />
 		<PackageReference Include="xunit" Version="2.8.1" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.1">
 			<PrivateAssets>all</PrivateAssets>
@@ -23,10 +25,20 @@
 
 		<!-- EF Core für In-Memory-Datenbank (Repository-Tests) -->
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.10" />
+
+		<!-- Configuration für appsettings.json -->
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.10" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\HerbstSchulung.EntityFramework\HerbstSchulung.EntityFramework.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 </Project>

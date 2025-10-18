@@ -7,7 +7,7 @@ namespace HerbstSchulung.EntityFramework.DesignTime;
 /// Design-Time-Factory für EF Core Migrations.
 /// Wird von der dotnet CLI verwendet, wenn kein Startprojekt bzw. keine Konfiguration verfügbar ist.
 /// </summary>
-public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+public class DesignTimeAppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
     public AppDbContext CreateDbContext(string[] args)
     {
