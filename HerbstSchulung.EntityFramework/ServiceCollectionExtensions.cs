@@ -1,33 +1,19 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace HerbstSchulung.EntityFramework;
 
 /// <summary>
-/// DI-Helfer zum Registrieren des DbContext.
+/// DI-Helfer zum Registrieren des DbContext Factory.
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-    /// <summary>
-    /// Registriert den AppDbContext. Für Workshops kann hier z. B. der Provider getauscht werden.
-    /// Standard: SQLite In-Memory für schnelle Demos, optional SQL Server via ConnectionString.
-    /// </summary>
-    public static IServiceCollection AddHerbstSchulungDbContext(
-        this IServiceCollection services,
-        string? connectionString = null,
-        bool useSqlServer = false)
+    public static IServiceCollection AddHerbstSchulungPersistancy(this IServiceCollection services, IConfiguration configuration)
     {
-        if (useSqlServer)
-        {
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(connectionString ?? "Server=(localdb)\\MSSQLLocalDB;Database=HerbstSchulungEf;Trusted_Connection=True;TrustServerCertificate=True;"));
-        }
-        else
-        {
-            // Für Demos/Test: SQLite In-Memory (persistiert während der Laufzeit des Prozesses)
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlite(connectionString ?? "Data Source=HerbstSchulungEf.sqlite"));
-        }
+        var connectionString = configuration.GetConnectionString("Default") 
+            ?? throw new InvalidOperationException("Connection string 'Default' not found in configuration.");
+        
+        services.AddSingleton<IAppDbContextFactory>(new AppDbContextFactory(connectionString));
 
         return services;
     }

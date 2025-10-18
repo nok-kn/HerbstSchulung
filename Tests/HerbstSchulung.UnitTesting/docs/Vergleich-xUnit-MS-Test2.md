@@ -16,7 +16,7 @@
 | **Mocking-Unterstützung**      | keine eingbaut, kompatibel mit Moq, NSubstitute       | keine eingbaut, kompatibel mit Moq, NSubstitute       |
 | **Typischer Einsatzbereich**   | Moderne, modulare, testgetriebene Projekte            | Klassische oder Microsoft-nahe Enterprise-Projekte     |
 
-## 📝 Fazit
+## Fazit
 
 - **xUnit** eignet sich besonders gut für neue, moderne .NET-Projekte
 - **MSTest v2** auch gut, vertraut für Teams mit Erfahrung mit klasischem .NET 
