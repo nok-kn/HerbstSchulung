@@ -47,6 +47,23 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Rechnung>().ToTable("Rechnungen");
         modelBuilder.Entity<Angebot>().ToTable("Angebote");
 
+        // Value Object
+        // Konfiguriere Geld als Owned Entity (Value Object) für BetragBrutto für alle konkreten Typen
+        // um Code zur reduzieren man dazu eine Methode schreiben, die für jeden Typ aufgerufen wird.
+        // Bei Owned Entities(wie Geld via OwnsOne) gilt:
+        //   - Wenn alle Spalten des Value Objects(BetragBrutto_Wert UND BetragBrutto_Waehrung) in der DB NULL sind, wird das gesamte Property als null materialisiert
+        //   - EF Core erstellt kein Geld - Objekt mit Default-Werten
+        modelBuilder.Entity<Rechnung>().OwnsOne(d => d.BetragBrutto, geld =>
+        {
+            geld.Property(g => g.Wert).HasColumnName("BetragBrutto_Wert");
+            geld.Property(g => g.Waehrung).HasColumnName("BetragBrutto_Waehrung");
+        });
+
+        modelBuilder.Entity<Angebot>().OwnsOne(d => d.BetragBrutto, geld =>
+        {
+            geld.Property(g => g.Wert).HasColumnName("BetragBrutto_Wert");
+            geld.Property(g => g.Waehrung).HasColumnName("BetragBrutto_Waehrung");
+        });
 
         // Seed für statischen Daten
         var seedCreated = new DateTime(2025, 01, 01, 0, 0, 0, DateTimeKind.Utc);

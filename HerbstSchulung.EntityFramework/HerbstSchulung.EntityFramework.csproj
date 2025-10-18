@@ -14,6 +14,8 @@
 	<ItemGroup>
 		<EmbeddedResource Include="Migrations\20251018081328_AddDokumentEntities_Up.sql" />
 		<EmbeddedResource Include="Migrations\20251018081328_AddDokumentEntities_Down.sql" />
+		<EmbeddedResource Include="Migrations\20251018140752_AddGeld_Up.sql" />
+		<EmbeddedResource Include="Migrations\20251018140752_AddGeld_Down.sql" />
 	</ItemGroup>
 
 	<ItemGroup>

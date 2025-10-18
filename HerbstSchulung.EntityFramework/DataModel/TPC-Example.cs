@@ -20,6 +20,11 @@ public abstract class Dokument : EntityBase
     /// </summary>
     [Range(0, 1_000_000)]
     public decimal? BetragNetto { get; set; }
+
+    /// <summary>
+    /// Bruttobetrag als Value Object mit Währung
+    /// </summary>
+    public Geld BetragBrutto { get; set; } = Geld.ZeroEuro;
 }
 
 public class Rechnung : Dokument
