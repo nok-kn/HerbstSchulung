@@ -36,10 +36,10 @@ public abstract class EntityBase
     [MaxLength(64)] // Längenbegrenzung in DB
     // [StringLength(64)] geht auch, aber MaxLength ist üblicher für DB-Spalten
     [Required]
-    public required string Id { get; set; } 
+    public string Id { get; set; } 
 
     /// <summary>
-    /// Optionale technische Erstellungszeit.
+    /// Erstellungszeit
     /// </summary>
     [DataType(DataType.DateTime)]
     public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
