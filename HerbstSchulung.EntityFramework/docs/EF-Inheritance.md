@@ -38,7 +38,7 @@ Start
 
 ## Andere Aspekte:
 - Abfragemuster: Polymorphe Queries => TPH/TPT, Konkrete Queries => TPC
-
+```
 // Schlechte Performance bei TPC
 var alleDokumente = await context.Set<Dokument>().ToListAsync();
 //  Erfordert UNION ALL über mehrere Tabellen
@@ -50,6 +50,7 @@ var allePersonen = await context.Set<Person>().ToListAsync();
 // Moderate Performance bei TPT
 var alleFahrzeuge = await context.Set<Fahrzeug>().ToListAsync();
 //  JOINs über Fahrzeuge + Autos + Lastkraftwagen
+```
 
 - Performance: Lesen: TPC > TPH > TPT,  Schreiben: TPH > TPC > TPT 
 - Wartbarkeit: TPT = beste Erweiterbarkeit, TPH = einfachste Struktur
