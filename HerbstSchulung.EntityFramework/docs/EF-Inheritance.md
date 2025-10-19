@@ -12,7 +12,7 @@
   - Eine abstrakte Basisklasse (Id, CreatedAt, etc.) für alle Entities ist sinnvoll
   - Benutze folgenden Entscheidungsbaum zur Auswahl der Strategie: 
 
-
+```
 Start
 │
 └── Gibt es sehr hohe Anforderungen an Abfrage Performance?
@@ -34,8 +34,9 @@ Start
                         └── Sind die Typen stark unterschiedlich?
                               ├── Ja   => Verwende **TPC**
                               └── Nein => Verwende **TPH**
+```
 
-Andere Aspekte:
+## Andere Aspekte:
 - Abfragemuster: Polymorphe Queries => TPH/TPT, Konkrete Queries => TPC
 
 // Schlechte Performance bei TPC
