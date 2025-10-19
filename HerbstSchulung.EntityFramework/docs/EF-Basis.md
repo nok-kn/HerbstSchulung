@@ -16,19 +16,29 @@ Hinweise:
 - -p = Projekt mit DbContext, -s = Startprojekt (liefert Provider/Config)
 - Für reine Bibliotheken: Design-Time Factory implementieren (IDesignTimeDbContextFactory)
 
-## Best Practices
+ ## Best Practices
 - Explizite Konfigurationen für Keys, Längen, Indizes
 - Keine Business-Logik im DbContext
 - Transaktionen bewusst einsetzen (`BeginTransactionAsync`)
 - AsNoTracking für reine Lesezugriffe
 - Owned Types für Value Objects
 
-
 ## Häufige Fallstricke
 - N+1-Queries: `Include`/`ThenInclude` oder explizite Lade-Strategien verwenden
-- Lazy Loading vermeiden (Performance/Seiteneffekte)
-- Zu breite DbContext-Lebenszeit (Singleton vermeiden)
-- Falsche DeleteBehavior-Einstellungen (Restrict vs. Cascade)
+- Zu breite DbContext Lebenszeit (Singleton vermeiden)
+- Falsche DeleteBehavior Einstellungen (Restrict vs. Cascade)
+- Migrations nicht mit echten Daten testen 
+- Entitäten als DTOs missbrauchen
+- SaveChanges in Schleifen aufrufen (Bulk-Operations nutzen)
+- Tracking bei Readonly-Abfragen aktiviert lassen
+- Connection Strings in Code hardcoden statt Configuration nutzen
+- Secrets in Source Control gespeichert
+- Fehlende Nullable Reference Type Annotations
+- Async/Await nicht konsequent verwenden
+- Shadow Properties ohne Dokumentation verwenden
+- Owned Entities vs. separate Tabellen falsch wählen
+- Index-Strategien nicht an Abfrage Muster anpassen
+- EF Core Version und Provider Version nicht synchron halten
 
 ## Testing
 - Für schnelle Unit-Tests InMemory verwenden

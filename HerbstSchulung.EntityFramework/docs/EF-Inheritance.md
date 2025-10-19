@@ -38,7 +38,7 @@ Start
 
 ## Andere Aspekte:
 - Abfragemuster: Polymorphe Queries => TPH/TPT, Konkrete Queries => TPC
-```
+```csharp
 // Schlechte Performance bei TPC
 var alleDokumente = await context.Set<Dokument>().ToListAsync();
 //  Erfordert UNION ALL über mehrere Tabellen
