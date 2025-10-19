@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Respawn;
 using Respawn.Graph;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace HerbstSchulung.EntityFramework.Tests;
 
@@ -17,7 +18,7 @@ public class DbFixture : IAsyncLifetime
     
     public DbFixture()
     {
-        var connectionString = Arrange.CetConnectionString();
+        var connectionString = Arrange.GetConnectionString();
         Connection = new SqlConnection(connectionString);
     }
 

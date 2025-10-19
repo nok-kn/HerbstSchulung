@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Xunit.Abstractions;
 
 namespace HerbstSchulung.EntityFramework.Tests;
 
@@ -11,6 +12,24 @@ namespace HerbstSchulung.EntityFramework.Tests;
 public static class Arrange
 {
     private static ServiceProvider? _serviceProvider;
+    private static ITestOutputHelper? _testOutputHelper;
+
+    /// <summary>
+    /// Setzt den ITestOutputHelper für xUnit-Logging.
+    /// Rufe dies am Anfang jedes Tests auf, um Logs in die Test-Ausgabe zu schreiben.
+    /// </summary>
+    /// <param name="testOutputHelper">Der xUnit ITestOutputHelper aus dem Test-Konstruktor.</param>
+    public static void SetTestOutputHelper(ITestOutputHelper? testOutputHelper)
+    {
+        _testOutputHelper = testOutputHelper;
+        
+        // ServiceProvider zurücksetzen, damit neue Logging-Konfiguration verwendet wird
+        if (_serviceProvider != null)
+        {
+            _serviceProvider.Dispose();
+            _serviceProvider = null;
+        }
+    }
 
     /// <summary>
     /// Erstellt einen InMemory-AppDbContext für schnelle Unit-Tests.
@@ -44,9 +63,8 @@ public static class Arrange
         else
         {
             // sobald Relationalität, SQL, Constraints oder komplexe Abfragen eine Rolle spielen (also fast immer :) ) , nimm eine echte DB oder Testcontainer
-            
 
-            // wir verwend DI um den DbContext zu erstellen, damit Logging funktionieren kann
+            // wir verwenden DI um den DbContext zu erstellen, damit Logging funktionieren kann
             if (_serviceProvider == null)
             {
                 // Konfiguration aus appsettings.json laden
@@ -59,11 +77,19 @@ public static class Arrange
                 services.AddLogging(builder =>
                 {
                     builder.AddConfiguration(configuration.GetSection("Logging"));
-                    builder.AddConsole();
+                    
+                    // Debug Output für Visual Studio (während Debugging)
+                    builder.AddDebug();
+
+                    // xUnit Test Output hinzufügen, falls ITestOutputHelper gesetzt ist
+                    if (_testOutputHelper != null)
+                    {
+                        builder.AddXunitTestOutput(_testOutputHelper);
+                    }
                 });
                 
+                // AppDbContextFactory registrieren (inkl. ILoggerFactory Injection)
                 services.AddHerbstSchulungPersistence(configuration);
-
 
                 _serviceProvider = services.BuildServiceProvider();
             }
@@ -83,7 +109,7 @@ public static class Arrange
         return configuration;
     }
 
-    internal static string CetConnectionString()
+    public static string GetConnectionString()
     {
         var configuration = GetConfiguration();
         var connectionString = configuration.GetConnectionString("Default");

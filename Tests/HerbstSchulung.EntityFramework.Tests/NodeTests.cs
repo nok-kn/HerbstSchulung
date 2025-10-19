@@ -2,6 +2,7 @@ using FluentAssertions;
 using HerbstSchulung.EntityFramework.DataModel;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace HerbstSchulung.EntityFramework.Tests;
 
@@ -9,10 +10,15 @@ namespace HerbstSchulung.EntityFramework.Tests;
 public class NodeTests : IAsyncLifetime
 {
     private readonly DbFixture _dbFixture;
+    private readonly ITestOutputHelper _output;
 
-    public NodeTests(DbFixture dbFixture)
+    public NodeTests(DbFixture dbFixture, ITestOutputHelper output)
     {
         _dbFixture = dbFixture;
+        _output = output;
+        
+        // Setze den Test-Output-Helper für EF Core Logging in den Tests
+        Arrange.SetTestOutputHelper(output);
     }
 
     [Fact]
@@ -58,7 +64,11 @@ public class NodeTests : IAsyncLifetime
         sut.ChangeTracker.Clear();
         var actualParent = await sut.Nodes
             .Include(n => n.Children)
-            .AsSplitQuery()                   
+            .AsSplitQuery()                   // split sollte 2 Abfragen erstellen:
+                                              // 1. Parent
+                                              // 2. Children
+                                              // und dann diese Ergebnisse internal zusammenführen   
+
             .FirstOrDefaultAsync(n => n.Id == parent.Id);
 
         actualParent.Should().NotBeNull();
