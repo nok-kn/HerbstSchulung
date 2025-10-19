@@ -85,8 +85,8 @@ public class AppDbContextFactory : IAppDbContextFactory
 
         // Logging und Entwickleroptionen
         #if DEBUG
-        // optionsBuilder.EnableSensitiveDataLogging();
-        optionsBuilder.EnableDetailedErrors();
+            // optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.EnableDetailedErrors();
         #endif
 
         return optionsBuilder.Options;
