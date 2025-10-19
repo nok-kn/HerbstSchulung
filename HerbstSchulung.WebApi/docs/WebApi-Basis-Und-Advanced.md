@@ -30,7 +30,7 @@
 ## Docker
 
 - Datei: HerbstSchulung.WebApi/Dockerfile
-- Build: docker build -t herbstschulung-webapi .
+- Build: docker build -f HerbstSchulung.WebApi/Dockerfile -t herbstschulung-webapi . 
 - Run: docker run -p 8080:8080 herbstschulung-webapi
 
 ## Zusätzliche Ressourcen

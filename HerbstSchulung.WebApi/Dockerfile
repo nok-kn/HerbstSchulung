@@ -9,8 +9,9 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["HerbstSchulung.WebApi/HerbstSchulung.WebApi.csproj", "HerbstSchulung.WebApi/"]
-COPY ["HerbstSchulung.Hosting.Abstractions/HerbstSchulung.Hosting.Abstractions.csproj", "HerbstSchulung.Hosting.Abstractions/"]
 COPY ["HerbstSchulung.Hosting.Services/HerbstSchulung.Hosting.Services.csproj", "HerbstSchulung.Hosting.Services/"]
+COPY ["HerbstSchulung.Hosting.Abstractions/HerbstSchulung.Hosting.Abstractions.csproj", "HerbstSchulung.Hosting.Abstractions/"]
+COPY ["Directory.Build.props", "./"]
 RUN dotnet restore "HerbstSchulung.WebApi/HerbstSchulung.WebApi.csproj"
 COPY . .
 WORKDIR "/src/HerbstSchulung.WebApi"
