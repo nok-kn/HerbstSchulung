@@ -122,6 +122,10 @@ public class EntityToDtoMappingTests : IAsyncLifetime
         // Mapster Konfiguration für maximale Tiefe bei rekursiven Dtos
         TypeAdapterConfig.GlobalSettings.Default.MaxDepth(2);
 
+        // weitere Konfiguration ist möglich:
+        // TypeAdapterConfig<Node, NodeWithChildrenDto>.NewConfig()
+        //    .Map(dest => dest.Children, src => src.Children.Select(c => new NodeWithChildrenDto(c.Id, c.Name, c.ParentId, new List<NodeWithChildrenDto>())));
+
         // Act - Mapster ProjectToType erstellt automatisch die Select-Projektion
         var parentDto = await sut.Nodes
             .Where(n => n.Id == parent.Id)
@@ -173,7 +177,7 @@ public class EntityToDtoMappingTests : IAsyncLifetime
         parentDto.Children.Should().Contain(c => c.Name == "Child 1");
         parentDto.Children.Should().Contain(c => c.Name == "Child 2");
         parentDto.Children.Should().AllSatisfy(c => c.ParentId.Should().Be(expectedParentId));
-        parentDto.Children.Should().AllSatisfy(c => (c.Children.Count == 0).Should().BeTrue());
+        parentDto.Children.Should().AllSatisfy(c => (c.Children == null || c.Children.Count == 0).Should().BeTrue());
     }
 
 

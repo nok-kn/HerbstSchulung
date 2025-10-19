@@ -34,7 +34,18 @@ internal sealed class XunitLoggerProvider : ILoggerProvider
 
     public ILogger CreateLogger(string categoryName)
     {
-        return new XunitLogger(_testOutputHelper, categoryName);
+        // Versuche den Typ aus dem categoryName zu ermitteln
+        Type? loggerType = Type.GetType(categoryName);
+        
+        if (loggerType != null)
+        {
+            // Erstelle den generischen XunitLogger-Typ mit dem ermittelten Typ
+            Type genericLoggerType = typeof(XunitLogger<>).MakeGenericType(loggerType);
+            return (ILogger)Activator.CreateInstance(genericLoggerType, _testOutputHelper, categoryName)!;
+        }
+        
+        // Fallback auf object, wenn der Typ nicht gefunden werden kann
+        return new XunitLogger<object>(_testOutputHelper, categoryName);
     }
 
     public void Dispose()
@@ -46,7 +57,7 @@ internal sealed class XunitLoggerProvider : ILoggerProvider
 /// <summary>
 /// Logger Implementierung, die in xUnit Test Output schreibt.
 /// </summary>
-internal sealed class XunitLogger : ILogger
+internal sealed class XunitLogger<T> : ILogger<T>
 {
     private readonly ITestOutputHelper _testOutputHelper;
     private readonly string _categoryName;

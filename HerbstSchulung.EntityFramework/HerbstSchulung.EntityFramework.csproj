@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<ItemGroup>
+		<PackageReference Include="EntityFrameworkCore.Triggered" Version="3.2.2" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.10" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
