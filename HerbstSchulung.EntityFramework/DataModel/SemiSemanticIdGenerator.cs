@@ -17,7 +17,7 @@ public static class SemiSemanticIdGenerator
         { typeof(Land),            "LND" },
         { typeof(Angebot),         "ANG" },
         { typeof(Rechnung),        "RNG" },
-
+        { typeof(Node),            "NOD" },
     };
 
     public static string GenerateFor(object entity, int randomLength = 8) => GenerateFor(entity.GetType(), randomLength);

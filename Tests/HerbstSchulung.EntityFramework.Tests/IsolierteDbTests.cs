@@ -6,7 +6,7 @@ using Xunit;
 
 namespace HerbstSchulung.EntityFramework.Tests
 {
-    // nach jedem Test wird die schnell DB zurückgesetzt (mit dem DbFixture)
+    // nach jedem Test wird die DB schnell zurückgesetzt (mit dem DbFixture)
     
     [Collection("db")]
     public class IsolierteDbTests :  IAsyncLifetime

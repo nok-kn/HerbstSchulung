@@ -20,6 +20,7 @@ public class AppDbContext : DbContext
     public DbSet<Land> Laender => Set<Land>();
     public DbSet<Rechnung> Rechnungen => Set<Rechnung>();
     public DbSet<Angebot> Angebote => Set<Angebot>();
+    public DbSet<Node> Nodes => Set<Node>();
 
     public bool IsReadOnly { get; init; }
 
@@ -29,6 +30,15 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // Seed für statischen Daten
+        var seedCreated = new DateTime(2025, 01, 01, 0, 0, 0, DateTimeKind.Utc);
+        modelBuilder.Entity<Land>().HasData(
+            new { Id = "LND-DE000001", Name = "Deutschland", IsoCode = "DE", CreatedUtc = seedCreated },
+            new { Id = "LND-AT000001", Name = "Österreich", IsoCode = "AT", CreatedUtc = seedCreated },
+            new { Id = "LND-CH000001", Name = "Schweiz", IsoCode = "CH", CreatedUtc = seedCreated }
+        );
+
 
         // TPH
         modelBuilder.Entity<Person>().UseTphMappingStrategy() 
@@ -67,13 +77,14 @@ public class AppDbContext : DbContext
             geld.Property(g => g.Waehrung).HasColumnName("BetragBrutto_Waehrung");
         });
 
-        // Seed für statischen Daten
-        var seedCreated = new DateTime(2025, 01, 01, 0, 0, 0, DateTimeKind.Utc);
-        modelBuilder.Entity<Land>().HasData(
-            new { Id = "LND-DE000001", Name = "Deutschland", IsoCode = "DE", CreatedUtc = seedCreated },
-            new { Id = "LND-AT000001", Name = "Österreich", IsoCode = "AT", CreatedUtc = seedCreated },
-            new { Id = "LND-CH000001", Name = "Schweiz", IsoCode = "CH", CreatedUtc = seedCreated }
-        );
+        // Self-referencing Hierarchie (Node)
+        modelBuilder.Entity<Node>().ToTable("Nodes");
+        modelBuilder.Entity<Node>()
+            .HasOne(n => n.Parent)
+            .WithMany(n => n.Children)
+            .HasForeignKey(n => n.ParentId)
+            .OnDelete(DeleteBehavior.NoAction); // Verhindert Cascade Delete bei Hierarchien ==> Entwickler ist zuständig für korrekten Löschvorgang
+
     }
 
     public override int SaveChanges()
