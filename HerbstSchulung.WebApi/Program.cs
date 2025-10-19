@@ -84,7 +84,12 @@ app.UseHttpLogging();
 // Exception-Handler und ProblemDetails
 app.UseExceptionHandler();
 app.UseStatusCodePages();
-app.UseHttpsRedirection();
+
+// HTTPS-Redirection nur wenn nicht in Docker Container
+if (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") != "true")
+{
+    app.UseHttpsRedirection();
+}
 
 // Routing und Endpunkte
 app.MapControllers();
