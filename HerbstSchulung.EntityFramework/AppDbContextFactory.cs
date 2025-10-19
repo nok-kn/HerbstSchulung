@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HerbstSchulung.EntityFramework;
 
@@ -9,17 +10,20 @@ namespace HerbstSchulung.EntityFramework;
 public class AppDbContextFactory : IAppDbContextFactory
 {
     private readonly string _connectionString;
+    private readonly ILoggerFactory? _loggerFactory;
 
     /// <summary>
     /// Erstellt eine Factory-Instanz für SQL Server.
     /// </summary>
-    /// <param name="connectionString">Connection String  für SQL Server.</param>
-    public AppDbContextFactory(string connectionString)
+    /// <param name="connectionString">Connection String für SQL Server.</param>
+    /// <param name="loggerFactory">Optionale LoggerFactory für EF Core Logging.</param>
+    public AppDbContextFactory(string connectionString, ILoggerFactory? loggerFactory = null)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
             throw new ArgumentException("Connection string darf nicht leer sein.", nameof(connectionString));
 
         _connectionString = connectionString;
+        _loggerFactory = loggerFactory;
     }
 
     /// <summary>
@@ -55,6 +59,12 @@ public class AppDbContextFactory : IAppDbContextFactory
     private DbContextOptions<AppDbContext> BuildOptions(bool enableTracking)
     {
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+
+        // LoggerFactory registrieren, falls vorhanden
+        if (_loggerFactory != null)
+        {
+            optionsBuilder.UseLoggerFactory(_loggerFactory);
+        }
 
         optionsBuilder.UseSqlServer(_connectionString, sqlOptions =>
         {

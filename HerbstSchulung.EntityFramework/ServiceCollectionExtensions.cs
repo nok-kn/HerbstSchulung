@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace HerbstSchulung.EntityFramework;
 
@@ -8,12 +9,12 @@ namespace HerbstSchulung.EntityFramework;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddHerbstSchulungPersistancy(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddHerbstSchulungPersistence(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("Default") 
             ?? throw new InvalidOperationException("Connection string 'Default' not found in configuration.");
         
-        services.AddSingleton<IAppDbContextFactory>(new AppDbContextFactory(connectionString));
+        services.AddSingleton<IAppDbContextFactory>(sp => new AppDbContextFactory(connectionString, sp.GetRequiredService<ILoggerFactory>()));
 
         return services;
     }

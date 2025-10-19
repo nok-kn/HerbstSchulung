@@ -1,7 +1,6 @@
-using HerbstSchulung.EntityFramework.DesignTime;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.IO;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace HerbstSchulung.EntityFramework.Tests;
 
@@ -11,7 +10,7 @@ namespace HerbstSchulung.EntityFramework.Tests;
 /// </summary>
 public static class Arrange
 {
-    private static AppDbContextFactory? _contextFactory;
+    private static ServiceProvider? _serviceProvider;
 
     /// <summary>
     /// Erstellt einen InMemory-AppDbContext für schnelle Unit-Tests.
@@ -45,27 +44,53 @@ public static class Arrange
         else
         {
             // sobald Relationalität, SQL, Constraints oder komplexe Abfragen eine Rolle spielen (also fast immer :) ) , nimm eine echte DB oder Testcontainer
-            // benutze [Trait("Category", "Integration")] um Integrationstests zu markieren
             
-            if (_contextFactory == null)
+
+            // wir verwend DI um den DbContext zu erstellen, damit Logging funktionieren kann
+            if (_serviceProvider == null)
             {
                 // Konfiguration aus appsettings.json laden
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-                    .Build();
+                var configuration = GetConfiguration();
 
-                var connectionString = configuration.GetConnectionString("DefaultConnection");
+                // ServiceCollection für DI erstellen
+                var services = new ServiceCollection();
 
-                if (string.IsNullOrEmpty(connectionString))
+                // Logging mit Konfiguration aus appsettings.json registrieren
+                services.AddLogging(builder =>
                 {
-                    throw new InvalidOperationException("ConnectionString 'DefaultConnection' nicht in appsettings.json gefunden.");
-                }
+                    builder.AddConfiguration(configuration.GetSection("Logging"));
+                    builder.AddConsole();
+                });
+                
+                services.AddHerbstSchulungPersistence(configuration);
 
-                _contextFactory = new AppDbContextFactory(connectionString);
+
+                _serviceProvider = services.BuildServiceProvider();
             }
 
-            return _contextFactory.CreateContext();
+            // AppDbContextFactory aus DI-Container auflösen
+            var factory = _serviceProvider.GetRequiredService<IAppDbContextFactory>();
+            return factory.CreateContext();
         }
+    }
+
+    internal static IConfigurationRoot GetConfiguration()
+    {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+            .Build();
+        return configuration;
+    }
+
+    internal static string CetConnectionString()
+    {
+        var configuration = GetConfiguration();
+        var connectionString = configuration.GetConnectionString("Default");
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new InvalidOperationException("Connection string 'Default' not found in configuration.");
+        }
+        return connectionString;
     }
 }

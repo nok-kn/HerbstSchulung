@@ -3,7 +3,6 @@
 
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Respawn;
 using Respawn.Graph;
 using Xunit;
@@ -18,13 +17,7 @@ public class DbFixture : IAsyncLifetime
     
     public DbFixture()
     {
-        // Konfiguration aus appsettings.json laden
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-            .Build();
-
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = Arrange.CetConnectionString();
         Connection = new SqlConnection(connectionString);
     }
 
