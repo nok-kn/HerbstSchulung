@@ -21,8 +21,11 @@ Der Nachteil: Es entstehen mehrere Roundtrips zur Datenbank, und zwischen den Ab
 | Komplexes Tracking über viele Entities |  | Mehrere Abfragen erhöhen die Nachbearbeitung im Change Tracker | Ja (SingleQuery) | Einheitliches Materialisieren in einem Durchlauf |
 
 ---
-
-## Empffehlung
+## Hinweise
+- Split Queries funktionieren nur bei `Include`-Abfragen.
+- Split Queries funktionieren nicht mit Projektionen (`Select`), z.B Entity to DTO.
+ 
+## Empfehlung
 
 - pro Query steuern
 ```csharp
@@ -31,5 +34,6 @@ ctx.Orders.Include(o => o.Lines).AsSplitQuery().ToListAsync();
 
 // Eine Abfrage erzwingen
 ctx.Orders.Include(o => o.Lines).ToListAsync();
+```
 
 - async bevorzugen
