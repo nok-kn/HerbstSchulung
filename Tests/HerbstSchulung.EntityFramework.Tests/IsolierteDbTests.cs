@@ -22,7 +22,7 @@ namespace HerbstSchulung.EntityFramework.Tests
         public async Task AppDbContext_Can_Add_And_Retrieve_Student()
         {
             // Arrange
-            using var sut = Arrange.CreateDbContext(false);
+            await using var sut = Arrange.CreateDbContext(false);
             var student = new Student
             {
                 Id = "STU-001",
@@ -48,7 +48,7 @@ namespace HerbstSchulung.EntityFramework.Tests
         public async Task AppDbContext_Can_Add_And_Retrieve_Teacher()
         {
             // Arrange
-            using var sut = Arrange.CreateDbContext(false);
+            await using var sut = Arrange.CreateDbContext(false);
             var teacher = new Teacher
             {
                 Id = "TCH-001",
@@ -74,7 +74,7 @@ namespace HerbstSchulung.EntityFramework.Tests
         public async Task AppDbContext_Can_Add_And_Retrieve_Rechnung_With_Geld()
         {
             // Arrange
-            using var sut = Arrange.CreateDbContext(false);
+            await using var sut = Arrange.CreateDbContext(false);
             var rechnung = new Rechnung
             {
                 Id = "RCH-001",
@@ -106,7 +106,7 @@ namespace HerbstSchulung.EntityFramework.Tests
         public async Task AppDbContext_Can_Add_And_Retrieve_Angebot_With_Geld()
         {
             // Arrange
-            using var sut = Arrange.CreateDbContext(false);
+            await using var sut = Arrange.CreateDbContext(false);
             var angebot = new Angebot
             {
                 Id = "ANG-001",
@@ -135,7 +135,7 @@ namespace HerbstSchulung.EntityFramework.Tests
         public async Task AppDbContext_Can_Update_Geld_In_Rechnung()
         {
             // Arrange
-            using var sut = Arrange.CreateDbContext(false);
+            await using var sut = Arrange.CreateDbContext(false);
             var rechnung = new Rechnung
             {
                 Id = "RCH-003",

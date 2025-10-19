@@ -28,7 +28,7 @@ public class EntityToDtoMappingTests : IAsyncLifetime
     public async Task Node_Can_Be_Mapped_To_Dto_Manually_After_Include()
     {
         // Arrange
-        using var sut = Arrange.CreateDbContext(false);
+        await using var sut = Arrange.CreateDbContext(false);
         var parent = await ArrangeParentWithChildren(sut);
         sut.ChangeTracker.Clear();
 
@@ -61,7 +61,7 @@ public class EntityToDtoMappingTests : IAsyncLifetime
     public async Task Node_Can_Be_Mapped_To_Dto_Using_Mapster_After_Include()
     {
         // Arrange
-        using var sut = Arrange.CreateDbContext(false);
+        await using var sut = Arrange.CreateDbContext(false);
         var parent = await ArrangeParentWithChildren(sut);
         sut.ChangeTracker.Clear();
 
@@ -85,7 +85,7 @@ public class EntityToDtoMappingTests : IAsyncLifetime
     public async Task Node_Can_Be_Projected_To_Dto_Manually_With_Select()
     {
         // Arrange
-        using var sut = Arrange.CreateDbContext(false);
+        await using var sut = Arrange.CreateDbContext(false);
         var parent = await ArrangeParentWithChildren(sut);
 
         // Act - Direkte Projektion in der Datenbank mit Select
@@ -116,7 +116,7 @@ public class EntityToDtoMappingTests : IAsyncLifetime
     public async Task Node_Can_Be_Projected_To_Dto_Using_Mapster_ProjectToType()
     {
         // Arrange
-        using var sut = Arrange.CreateDbContext(false);
+        await using var sut = Arrange.CreateDbContext(false);
         var parent = await ArrangeParentWithChildren(sut);
 
         // Mapster Konfiguration für maximale Tiefe bei rekursiven Dtos

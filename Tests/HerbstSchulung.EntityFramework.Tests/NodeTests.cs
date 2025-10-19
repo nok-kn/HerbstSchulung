@@ -25,7 +25,7 @@ public class NodeTests : IAsyncLifetime
     public async Task Node_Can_Be_Created_Without_Parent()
     {
         // Arrange
-        using var sut = Arrange.CreateDbContext(false);
+        await using var sut = Arrange.CreateDbContext(false);
         var rootNode = new Node
         {
             Name = "Root Node"
@@ -47,7 +47,7 @@ public class NodeTests : IAsyncLifetime
     public async Task Node_Can_Have_Parent_And_Children()
     {
         // Arrange
-        using var sut = Arrange.CreateDbContext(false);
+        await using var sut = Arrange.CreateDbContext(false);
         var parent = new Node { Name = "Parent Node" };
         var child1 = new Node { Name = "Child 1" };
         var child2 = new Node { Name = "Child 2" };
@@ -81,7 +81,7 @@ public class NodeTests : IAsyncLifetime
     public async Task Node_Children_Can_Access_Parent()
     {
         // Arrange
-        using var sut = Arrange.CreateDbContext(false);
+        await using var sut = Arrange.CreateDbContext(false);
         var parent = new Node { Name = "Parent Node" };
         var child = new Node { Name = "Child Node" };
 
@@ -109,7 +109,7 @@ public class NodeTests : IAsyncLifetime
     public async Task Node_Can_Create_Multi_Level_Hierarchy()
     {
         // Arrange
-        using var sut = Arrange.CreateDbContext(false);
+        await using var sut = Arrange.CreateDbContext(false);
         var root = new Node { Name = "Root" };
         var level1 = new Node { Name = "Level 1" };
         var level2 = new Node { Name = "Level 2" };
@@ -145,7 +145,7 @@ public class NodeTests : IAsyncLifetime
     public async Task Node_Can_Update_Parent()
     {
         // Arrange
-        using var sut = Arrange.CreateDbContext(false);
+        await using var sut = Arrange.CreateDbContext(false);
         var parent1 = new Node { Name = "Parent 1" };
         var parent2 = new Node { Name = "Parent 2" };
         var child = new Node { Name = "Child" };
@@ -177,7 +177,7 @@ public class NodeTests : IAsyncLifetime
     public async Task Node_Can_Query_All_Root_Nodes()
     {
         // Arrange
-        using var sut = Arrange.CreateDbContext(false);
+        await using var sut = Arrange.CreateDbContext(false);
         var root1 = new Node { Name = "Root 1" };
         var root2 = new Node { Name = "Root 2" };
         var child = new Node { Name = "Child" };
