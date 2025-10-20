@@ -1,6 +1,6 @@
 # Herbstschulung
 
-@2025 Krzysztof Nowak - http://www.nowak-it.com
+@2025 Krzysztof Nowak - http://www.nowak-it.de
 
 ## Kurzbeschreibung
 - Trainings- und Beispiel-Repository für moderne .NET 8 - 10 Themen
