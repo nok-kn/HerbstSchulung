@@ -35,7 +35,7 @@ von höchsten zu nidrigen Priorität:
 - Eigene interne APIs 
 - Fehlerwege: Verhalten bei ungültigen Eingaben oder fehlschlagenden Abhängigkeiten.
 - Validierungen und Grenzen: null/leer, Min/Max-Längen, Enum-Bereiche, Zahlenbereiche, Zeiträume/Zeitzonen
-- Regressionen: bevor Refactoring
+- Regressionen: nach Refactoring
 - Regressionen: Für jeden behobenen Bug einen Test hinzufügen
 - Smoke pro externe Abhängigkeit: DB, Queue, HTTP – kann verbinden + einfachster Flow
 - Edge Cases 
